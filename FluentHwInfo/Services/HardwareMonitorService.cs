@@ -9,9 +9,9 @@ namespace FluentHwInfo.Services
     public class HardwareMonitorService
     {
         private readonly Computer _computer;
-        private ISensor? _cpuPackagePowerSensor; // ? in case the sensor is not found
+        private ISensor? _cpuPackagePowerSensor; 
         private CancellationTokenSource _cts;
-        public int UpdateIntervalMs { get; set; } = 500; // standardvalue = 500ms
+        public int UpdateIntervalMs { get; set; } = 500; // standard value = 500ms
 
         // full form would look like this:
         // private int _updateIntervalMs = 500;

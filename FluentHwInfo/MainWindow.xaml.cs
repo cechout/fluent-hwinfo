@@ -13,6 +13,8 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ApplicationSettings;
+using WinUIEx;
 
 namespace FluentHwInfo
 {
@@ -21,37 +23,42 @@ namespace FluentHwInfo
         public MainWindow()
         {
             this.InitializeComponent();
+            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; // this ensures that right at the start of the app, the first item in the navigation view is already selected
 
-            // das sorgt dafür, dass direkt beim start der app das erste item (Dashboard) 
-            // ausgewählt ist und der rahmen nicht leer bleibt.
-            nvSample.SelectedItem = nvSample.MenuItems[0];
+            // set the start size of the whole app window
+            this.SetWindowSize(1000, 700);
+
+            // set the min size of whole app window
+            var manager = WinUIEx.WindowManager.Get(this);
+            manager.MinWidth = 800;
+            manager.MinHeight = 600;
         }
 
-        // diese methode feuert jedes mal, wenn du links auf ein icon klickst
-        private void nvSample_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        // this method is called whenever an item in the navigation view is clicked
+        private void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            // wir greifen uns das angeklickte item
+            // checks if native settings item got clicked
+            if (args.IsSettingsSelected)
+            {
+                //contentFrame.Navigate(typeof(SettingsPage));
+                return;
+            }
+
+            // In a menu like this, you could theoretically click on simple separators or plain headings as well
+            // the event fires on everything and simply returns the object as a completely generic, unnamed "object"
+            // thats why we check if the clicked item is actually a NavigationViewItem
             if (args.SelectedItem is NavigationViewItem selectedItem)
             {
-                // wir holen uns das stichwort (z.b. "DashboardPage")
-                string pageTag = selectedItem.Tag.ToString();
-
-                // je nach stichwort laden wir die passende seite in den frame
+                string pageTag = selectedItem.Tag.ToString(); // we pull the value of the tag of the selected item
                 switch (pageTag)
                 {
                     case "CPU":
-                        // typeof() sagt dem frame genau, welche klasse er laden soll
+                        // typeof() specifies the class that the frame should load
                         contentFrame.Navigate(typeof(CPUMonitoring));
                         break;
 
                     case "GPU":
-
-                        // typeof() sagt dem frame genau, welche klasse er laden soll
-                        //contentFrame.Navigate(typeof(GPUMonitoring));
-                        break;
-
-                    case "Settings":
-                        // contentFrame.Navigate(typeof(SettingsPage)); // erst einkommentieren, wenn die page existiert
+                        //contentFrame.Navigate(typeof(GPUMonitoring)); 
                         break;
                 }
             }

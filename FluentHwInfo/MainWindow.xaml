@@ -1,34 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Window
     x:Class="FluentHwInfo.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:FluentHwInfo"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:FluentHwInfo"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Title="FluentHwInfo">
+    Title="FluentHwInfo"
+    mc:Ignorable="d">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
     <Grid>
-        <NavigationView x:Name="nvSample"
-                        PaneDisplayMode="Auto"
-                        SelectionChanged="nvSample_SelectionChanged">
+        <NavigationView
+            x:Name="MainNavigationView"
+            PaneDisplayMode="Auto"
+            SelectionChanged="MainNavigationView_SelectionChanged">
 
             <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Home"
-                                    Content="CPU"
-                                    Tag="CPU" />
-                <NavigationViewItem Icon="DockRight"
-                                    Content="GPU"
-                                    Tag="GPU" />
+                <!--  CPU Item  -->
+                <NavigationViewItem Content="CPU" Tag="CPU">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE950;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <!--  GPU Item  -->
+                <NavigationViewItem Content="GPU" Tag="GPU">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE7FC;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <!--settings tab is automatically included-->
+                <!--  settings tab is automatically included  -->
             </NavigationView.FooterMenuItems>
 
             <Frame x:Name="contentFrame" />
