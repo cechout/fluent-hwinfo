@@ -1,4 +1,6 @@
 using FluentHwInfo.Views;
+using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -13,6 +15,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.ApplicationSettings;
 using WinUIEx;
 
@@ -24,6 +27,9 @@ namespace FluentHwInfo
         {
             this.InitializeComponent();
             MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; // this ensures that right at the start of the app, the first item in the navigation view is already selected
+
+            // set title bar color to system default 
+            AppWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
 
             // set the start size of the whole app window
             this.SetWindowSize(800, 600);

@@ -16,10 +16,14 @@
     <Grid>
         <NavigationView
             x:Name="MainNavigationView"
-            PaneDisplayMode="Auto"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            OpenPaneLength="170"
+            PaneDisplayMode="Left"
             SelectionChanged="MainNavigationView_SelectionChanged">
 
             <NavigationView.MenuItems>
+
                 <!--  CPU Item  -->
                 <NavigationViewItem Content="CPU" Tag="CPU">
                     <NavigationViewItem.Icon>
@@ -36,7 +40,13 @@
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
-                <!--  settings tab is automatically included  -->
+
+                <!--  Settings Item  -->
+                <NavigationViewItem Content="Settings" Tag="Settings">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.FooterMenuItems>
 
             <Frame x:Name="contentFrame" />
