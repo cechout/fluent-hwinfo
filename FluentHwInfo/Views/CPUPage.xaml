@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:FluentHwInfo.Views"
+    xmlns:local1="using:FluentHwInfo.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -72,147 +73,62 @@
                     Margin="0,0,0,8"
                     Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
 
-                <ListView Grid.Row="2" SelectionMode="Single">
+                <ListView
+                    Grid.Row="2"
+                    ItemsSource="{x:Bind ViewModel.SensorList, Mode=OneWay}"
+                    SelectionMode="Multiple">
 
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="Padding" Value="12,8,12,8" />
+                            <Setter Property="Margin" Value="0,0,0,4" />
                         </Style>
                     </ListView.ItemContainerStyle>
 
-                    <ListViewItem>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="120" />
-                            </Grid.ColumnDefinitions>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local1:SensorRowViewModel">
 
-                            <CheckBox Grid.Column="0" VerticalAlignment="Center" />
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="CPU Package Power" />
-                            <TextBlock
-                                Grid.Column="2"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="32.5 W" />
-                            <TextBlock
-                                Grid.Column="3"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="12.1 W" />
-                            <TextBlock
-                                Grid.Column="4"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="95.0 W" />
-                            <TextBlock
-                                Grid.Column="5"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="45.3 W" />
-                        </Grid>
-                    </ListViewItem>
+                            <Grid Padding="0,8,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="120" />
+                                </Grid.ColumnDefinitions>
 
-                    <ListViewItem>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="120" />
-                            </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Font_ButtonText}"
+                                    Text="{x:Bind Name}" />
+                                <TextBlock
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Font_ButtonText}"
+                                    Text="{x:Bind CurrentValue}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Font_ButtonText}"
+                                    Text="{x:Bind MinimumValue}" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Font_ButtonText}"
+                                    Text="{x:Bind MaximumValue}" />
+                                <TextBlock
+                                    Grid.Column="4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource Font_ButtonText}"
+                                    Text="{x:Bind AverageValue}" />
+                            </Grid>
 
-                            <CheckBox Grid.Column="0" VerticalAlignment="Center" />
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="IA Cores Power" />
-                            <TextBlock
-                                Grid.Column="2"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="28.0 W" />
-                            <TextBlock
-                                Grid.Column="3"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="5.2 W" />
-                            <TextBlock
-                                Grid.Column="4"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="80.5 W" />
-                            <TextBlock
-                                Grid.Column="5"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="38.1 W" />
-                        </Grid>
-                    </ListViewItem>
-
-                    <ListViewItem>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="100" />
-                                <ColumnDefinition Width="120" />
-                            </Grid.ColumnDefinitions>
-
-                            <CheckBox Grid.Column="0" VerticalAlignment="Center" />
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="GT Cores Power" />
-                            <TextBlock
-                                Grid.Column="2"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="1.2 W" />
-                            <TextBlock
-                                Grid.Column="3"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="0.0 W" />
-                            <TextBlock
-                                Grid.Column="4"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="15.0 W" />
-                            <TextBlock
-                                Grid.Column="5"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource Font_ButtonText}"
-                                Text="2.5 W" />
-                        </Grid>
-                    </ListViewItem>
-
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </Grid>
         </Border>
