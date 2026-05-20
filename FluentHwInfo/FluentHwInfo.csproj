@@ -47,10 +47,6 @@
     <PackageReference Include="WinUIEx" Version="2.9.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="Views\GPUPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -59,6 +55,9 @@
     <Page Update="Views\CPUPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <!--

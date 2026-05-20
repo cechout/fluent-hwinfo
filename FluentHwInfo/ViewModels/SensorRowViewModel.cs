@@ -3,8 +3,20 @@ using System.Runtime.CompilerServices;
 
 namespace FluentHwInfo.ViewModels
 {
-    // this class represents a single row in the UI for a sensor metric, e.g. "CPU Package Power"
-    // it contains the name of the metric and the values for current, minimum, maximum and average
+    /// <summary>
+    /// Represents a single, interactive row in the UI for a specific hardware sensor metric (e.g., "CPU Package Power")
+    /// Acts as a "Child-ViewModel", which is entirely managed by a "Parent-ViewModel" (e.g., CpuViewModel)
+    /// 
+    /// Responsibilities:
+    /// - Stores the current, minimum, maximum, and average values as formatted, bindable strings for the XAML UI.
+    /// - Calculates the statistical values (Min, Max, Avg) internally whenever a new raw double value is passed via the 
+    ///   UpdateValue(double) method
+    /// - Implements INotifyPropertyChanged to automatically trigger UI redraws when values change
+    /// 
+    /// Architecture Constraints:
+    /// This class is strictly decoupled from hardware services. It does NOT pull data itself. Instead, it passively waits for 
+    /// the Parent-ViewModel to push raw data into it
+    /// </summary>
 
     // SensorRowViewModel inherits from INotifyPropertyChanged
     // INotifyPropertyChanged is mandatory for the UI to react to changes in the data,
@@ -16,8 +28,12 @@ namespace FluentHwInfo.ViewModels
         private string _maximumValue = "0.0 W";
         private string _averageValue = "0.0 W";
 
-        public string Name { get; set; } = "Unknown Sensor";
+        private double _min = double.MaxValue;
+        private double _max = double.MinValue;
+        private double _sum = 0;
+        private int _count = 0;
 
+        public string Name { get; set; } = "Unknown Sensor";
         public string CurrentValue
         {
             get => _currentValue;
@@ -27,7 +43,6 @@ namespace FluentHwInfo.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public string MinimumValue
         {
             get => _minimumValue;
@@ -37,7 +52,6 @@ namespace FluentHwInfo.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public string MaximumValue
         {
             get => _maximumValue;
@@ -47,7 +61,6 @@ namespace FluentHwInfo.ViewModels
                 OnPropertyChanged();
             }
         }
-
         public string AverageValue
         {
             get => _averageValue;
@@ -58,8 +71,24 @@ namespace FluentHwInfo.ViewModels
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public void UpdateValue(double newValue)
+        {
+            // 1. mathematics
+            if (newValue < _min) _min = newValue;
+            if (newValue > _max) _max = newValue;
 
+            _sum += newValue;
+            _count++;
+            double avg = _sum / _count;
+
+            // 2. build strings for the UI (the setters automatically fire the OnPropertyChanged event)
+            CurrentValue = $"{newValue:0.0} W";
+            MinimumValue = $"{_min:0.0} W";
+            MaximumValue = $"{_max:0.0} W";
+            AverageValue = $"{avg:0.0} W";
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

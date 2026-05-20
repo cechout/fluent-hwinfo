@@ -6,6 +6,20 @@ using LibreHardwareMonitor.Hardware;
 
 namespace FluentHwInfo.Services
 {
+    /// <summary>
+    /// Acts as the dedicated backend engine for reading raw physical hardware metrics, utilizing the LibreHardwareMonitorLib.
+    /// 
+    /// Responsibilities:
+    /// - Initializes hardware access and targets specific components (e.g., CPU, GPU) while explicitly disabling irrelevant 
+    ///   hardware (like Storage or Network) to maximize polling performance
+    /// - Runs an isolated, asynchronous polling loop governed by a CancellationTokenSource to continuously read sensor values at 
+    ///   a configurable interval
+    /// - Broadcasts raw double values to the rest of the application using C# Events (e.g., Action{T}).
+    /// 
+    /// Architecture Constraints:
+    /// Adheres strictly to the Single Responsibility Principle. This class has absolute zero knowledge of ViewModels, UI elements, 
+    /// data persistence, or string formatting. It exclusively handles hardware communication and blind data broadcasting
+    /// </summary>
     public class HardwareMonitorService
     {
         private readonly Computer _computer;

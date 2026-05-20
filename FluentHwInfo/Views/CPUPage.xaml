@@ -126,7 +126,6 @@
                                     Style="{StaticResource Font_ButtonText}"
                                     Text="{x:Bind AverageValue}" />
                             </Grid>
-
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
