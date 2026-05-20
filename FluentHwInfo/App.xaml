@@ -132,21 +132,25 @@
                                         VerticalAlignment="Center"
                                         Content="{TemplateBinding Content}" />
                                 </Border>
+
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal" />
+
+                                        <!--  hover effect: becomes slightly lighter  -->
                                         <VisualState x:Name="PointerOver">
-                                            <!--  hover effect: becomes slightly lighter  -->
                                             <VisualState.Setters>
                                                 <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonBackgroundPointerOver}" />
                                             </VisualState.Setters>
                                         </VisualState>
+
+                                        <!--  click effect: color changes, but NO size change (scale)  -->
                                         <VisualState x:Name="Pressed">
-                                            <!--  click effect: color changes, but NO size change (scale)  -->
                                             <VisualState.Setters>
                                                 <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonBackgroundPressed}" />
                                             </VisualState.Setters>
                                         </VisualState>
+
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
                             </Grid>

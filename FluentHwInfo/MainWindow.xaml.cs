@@ -26,12 +26,12 @@ namespace FluentHwInfo
             MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; // this ensures that right at the start of the app, the first item in the navigation view is already selected
 
             // set the start size of the whole app window
-            this.SetWindowSize(1000, 700);
+            this.SetWindowSize(800, 600);
 
             // set the min size of whole app window
             var manager = WinUIEx.WindowManager.Get(this);
-            manager.MinWidth = 800;
-            manager.MinHeight = 600;
+            manager.MinWidth = 600;
+            manager.MinHeight = 450;
         }
 
         // this method is called whenever an item in the navigation view is clicked
@@ -54,7 +54,7 @@ namespace FluentHwInfo
                 {
                     case "CPU":
                         // typeof() specifies the class that the frame should load
-                        contentFrame.Navigate(typeof(CPUMonitoring));
+                        contentFrame.Navigate(typeof(CPUPage));
                         break;
 
                     case "GPU":
