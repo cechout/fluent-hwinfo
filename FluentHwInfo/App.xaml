@@ -10,7 +10,298 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
-            <!-- Other app resources here -->
+
+            <ResourceDictionary.ThemeDictionaries>
+
+                <!-- DARK MODE -->
+                <ResourceDictionary x:Key="Dark">
+                    <!-- layer 1-3 -->
+                    <StaticResource x:Key="Brush_Layer1"
+                                    ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                    <StaticResource x:Key="Brush_Layer2"
+                                    ResourceKey="LayerFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer3"
+                                    ResourceKey="SolidBackgroundFillColorSecondaryBrush" />
+                    <StaticResource x:Key="Brush_Layer3_5"
+                                    ResourceKey="SolidBackgroundFillColorTertiaryBrush" />
+
+                    <!-- layer 4-5 -->
+                    <StaticResource x:Key="Brush_Layer4"
+                                    ResourceKey="CardBackgroundFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer4_5"
+                                    ResourceKey="CardBackgroundFillColorSecondaryBrush" />
+                    <StaticResource x:Key="Brush_Layer5"
+                                    ResourceKey="CardBackgroundFillColorDefaultBrush" />
+
+                    <!-- layer 6-7 -->
+                    <StaticResource x:Key="Brush_Layer5_5"
+                                    ResourceKey="ControlFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer6"
+                                    ResourceKey="ControlFillColorSecondaryBrush" />
+                    <StaticResource x:Key="Brush_Layer7"
+                                    ResourceKey="ControlFillColorTertiaryBrush" />
+
+                    <!-- layer 8-10 -->
+                    <StaticResource x:Key="Brush_Layer8"
+                                    ResourceKey="ControlElevationBorderBrush" />
+                    <StaticResource x:Key="Brush_Layer9"
+                                    ResourceKey="SurfaceStrokeColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer10"
+                                    ResourceKey="DividerStrokeColorDefaultBrush" />
+
+                    <!-- accents -->
+                    <StaticResource x:Key="Brush_Accent1"
+                                    ResourceKey="AccentFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Accent2"
+                                    ResourceKey="SystemFillColorSuccessBrush" />
+                    <StaticResource x:Key="Brush_Accent3"
+                                    ResourceKey="SystemFillColorCriticalBrush" />
+                </ResourceDictionary>
+
+                <!-- LIGHT MODE -->
+                <ResourceDictionary x:Key="Light">
+                    <!-- wir nehmen exakt die gleichen ressource-keys wie im dark mode! 
+                     windows tauscht die farben dahinter im light mode automatisch gegen helle aus. -->
+                    <StaticResource x:Key="Brush_Layer1"
+                                    ResourceKey="SolidBackgroundFillColorBaseBrush" />
+                    <StaticResource x:Key="Brush_Layer2"
+                                    ResourceKey="LayerFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer3"
+                                    ResourceKey="SolidBackgroundFillColorSecondaryBrush" />
+                    <StaticResource x:Key="Brush_Layer3_5"
+                                    ResourceKey="SolidBackgroundFillColorTertiaryBrush" />
+
+                    <StaticResource x:Key="Brush_Layer4"
+                                    ResourceKey="CardBackgroundFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer4_5"
+                                    ResourceKey="CardBackgroundFillColorSecondaryBrush" />
+                    <StaticResource x:Key="Brush_Layer5"
+                                    ResourceKey="CardBackgroundFillColorDefaultBrush" />
+
+                    <StaticResource x:Key="Brush_Layer5_5"
+                                    ResourceKey="ControlFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer6"
+                                    ResourceKey="ControlFillColorSecondaryBrush" />
+                    <StaticResource x:Key="Brush_Layer7"
+                                    ResourceKey="ControlFillColorTertiaryBrush" />
+
+                    <StaticResource x:Key="Brush_Layer8"
+                                    ResourceKey="ControlElevationBorderBrush" />
+                    <StaticResource x:Key="Brush_Layer9"
+                                    ResourceKey="SurfaceStrokeColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Layer10"
+                                    ResourceKey="DividerStrokeColorDefaultBrush" />
+
+                    <StaticResource x:Key="Brush_Accent1"
+                                    ResourceKey="AccentFillColorDefaultBrush" />
+                    <StaticResource x:Key="Brush_Accent2"
+                                    ResourceKey="SystemFillColorSuccessBrush" />
+                    <StaticResource x:Key="Brush_Accent3"
+                                    ResourceKey="SystemFillColorCriticalBrush" />
+                </ResourceDictionary>
+
+            </ResourceDictionary.ThemeDictionaries>
+
+            <!--fonts-->
+            <!--button text (based on standard text)-->
+            <Style x:Key="Font_ButtonText"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource BodyTextBlockStyle}">
+                <Setter Property="FontWeight"
+                        Value="Normal" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <!--button sign (based on subtitle for slightly larger size)-->
+            <Style x:Key="Font_ButtonSign"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource SubtitleTextBlockStyle}">
+                <Setter Property="FontWeight"
+                        Value="SemiBold" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <!--textblock header (based on title)-->
+            <Style x:Key="Font_TextBlockHeader"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource TitleTextBlockStyle}">
+                <Setter Property="FontWeight"
+                        Value="SemiBold" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+            </Style>
+
+            <!--textblock output display (dimmed)-->
+            <Style x:Key="Font_TextBlockOutputDisplay"
+                   TargetType="TextBlock"
+                   BasedOn="{StaticResource BodyTextBlockStyle}">
+                <Setter Property="FontWeight"
+                        Value="SemiBold" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorSecondaryBrush}" />
+            </Style>
+
+
+            <!--button styles-->
+            <!--base style for all buttons with no shrink effect-->
+            <Style x:Key="Style_BaseButtonNoShrink"
+                   TargetType="Button">
+                <Setter Property="CornerRadius"
+                        Value="{ThemeResource ControlCornerRadius}" />
+                <Setter Property="BorderThickness"
+                        Value="1" />
+                <!-- fluent buttons always have a 1px border -->
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="RootGrid"
+                                  Background="{TemplateBinding Background}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="PointerOver">
+                                            <!-- hover effect: becomes slightly lighter -->
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.Background"
+                                                        Value="{ThemeResource ButtonBackgroundPointerOver}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <!-- click effect: color changes, but NO size change (scale) -->
+                                            <VisualState.Setters>
+                                                <Setter Target="RootGrid.Background"
+                                                        Value="{ThemeResource ButtonBackgroundPressed}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <!-- the actual button content -->
+                                <Border CornerRadius="{TemplateBinding CornerRadius}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                    <ContentPresenter x:Name="ContentPresenter"
+                                                      Content="{TemplateBinding Content}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      Padding="12,6" />
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!--the specific layer buttons now all inherit from this base style-->
+            <!--accent 1-->
+            <Style x:Key="Style_ButtonAccent1"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource AccentFillColorDefaultBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+            </Style>
+
+            <!--accent 2-->
+            <Style x:Key="Style_ButtonAccent2"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource SystemFillColorSuccessBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+            </Style>
+            
+            <!--accent 3-->
+            <Style x:Key="Style_ButtonAccent3"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource SystemFillColorCriticalBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+            </Style>
+
+            <!--layer 6-->
+            <Style x:Key="Style_ButtonLayer6"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource ControlFillColorSecondaryBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{ThemeResource ControlElevationBorderBrush}" />
+            </Style>
+
+            <!--layer 5-->
+            <Style x:Key="Style_ButtonLayer5"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{ThemeResource ControlElevationBorderBrush}" />
+            </Style>
+
+            <!--layer 4_5-->
+            <Style x:Key="Style_ButtonLayer4_5"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource CardBackgroundFillColorSecondaryBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{ThemeResource ControlElevationBorderBrush}" />
+            </Style>
+
+            <!--layer 4-->
+            <Style x:Key="Style_ButtonLayer4"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{ThemeResource ControlElevationBorderBrush}" />
+            </Style>
+
+            <!--layer 3_5-->
+            <Style x:Key="Style_ButtonLayer3_5"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource SolidBackgroundFillColorTertiaryBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{ThemeResource ControlElevationBorderBrush}" />
+            </Style>
+
+            <!--layer 3-->
+            <Style x:Key="Style_ButtonLayer3"
+                   TargetType="Button"
+                   BasedOn="{StaticResource Style_BaseButtonNoShrink}">
+                <Setter Property="Background"
+                        Value="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" />
+                <Setter Property="Foreground"
+                        Value="{ThemeResource TextFillColorPrimaryBrush}" />
+                <Setter Property="BorderBrush"
+                        Value="{ThemeResource ControlElevationBorderBrush}" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
