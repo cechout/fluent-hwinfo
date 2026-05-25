@@ -137,7 +137,11 @@ namespace FluentHwInfo.Services
             if (_cts != null) return;
 
             _cts = new CancellationTokenSource();
-            _ = LoopAsync(_cts.Token);
+
+            // TASK.RUN is the magical command 
+            // only this explicit command creates a new thread in the background, and puts explicitly the method
+            // LoopAsync on this new thread, so that it does not block the UI thread
+            Task.Run(() => LoopAsync(_cts.Token));
         }
 
         public void StopMonitoring()
@@ -146,10 +150,8 @@ namespace FluentHwInfo.Services
             _cts = null;
         }
 
-        // "async Task" is a method that runs asynchronously and can be awaited
-        // so the program continues to run every other thing and only after exactly the set interval
-        // it will get executed again, this is the perfect way to create a loop that runs every x milliseconds without
-        // blocking the main thread
+        // "async Task" keyword does not create a new thread, it just allows us to use the "await" keyword inside
+        // the method
         private async Task LoopAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
@@ -183,6 +185,10 @@ namespace FluentHwInfo.Services
                 // will receive this list and can do whatever they want with it (e.g., update the UI, ...)
                 HardwareDataUpdated?.Invoke(payload);
 
+                // await Task.Delay() does not freeze the thread in the same way as Thread.Sleep(), 
+                // it saves the state of the method and returns the background thread to the windows thread pool
+                // for those few milliseconds, and after the delay, it grabs a free thread again from the windows
+                // thread pool and continues the execution of the method from where it left off
                 await Task.Delay(UpdateIntervalMs, token);
             }
         }

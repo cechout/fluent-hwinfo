@@ -4,18 +4,19 @@ using System.Runtime.CompilerServices;
 namespace FluentHwInfo.ViewModels
 {
     /// <summary>
-    /// Represents a single, interactive row in the UI for a specific hardware sensor metric (e.g., "CPU Package Power")
-    /// Acts as a "Child-ViewModel", which is entirely managed by a "Parent-ViewModel" (e.g., CpuViewModel)
+    /// Serves as the granular DataContext directly bound to a single UI row, representing the smallest nested scope in the 
+    /// ViewModel hierarchy.
+    /// Acts as a pure "Child-ViewModel" which is entirely managed by its parent (HardwareGroupViewModel).
     /// 
     /// Responsibilities:
     /// - Stores the current, minimum, maximum, and average values as formatted, bindable strings for the XAML UI.
     /// - Calculates the statistical values (Min, Max, Avg) internally whenever a new raw double value is passed via the 
-    ///   UpdateValue(double) method
-    /// - Implements INotifyPropertyChanged to automatically trigger UI redraws when values change
+    ///   UpdateValue(double) method.
+    /// - Implements INotifyPropertyChanged to automatically trigger UI redraws when values change.
     /// 
     /// Architecture Constraints:
     /// This class is strictly decoupled from hardware services. It does NOT pull data itself. Instead, it passively waits for 
-    /// the Parent-ViewModel to push raw data into it
+    /// the Parent-ViewModel to push raw data into it.
     /// </summary>
 
     // SensorRowViewModel inherits from INotifyPropertyChanged
@@ -33,6 +34,7 @@ namespace FluentHwInfo.ViewModels
         private double _sum = 0;
         private int _count = 0;
 
+        public string Id { get; set; }
         public string Name { get; set; } = "Unknown Sensor";
         public string CurrentValue
         {
