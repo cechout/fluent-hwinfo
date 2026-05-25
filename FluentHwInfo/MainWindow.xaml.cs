@@ -28,15 +28,17 @@ namespace FluentHwInfo
             this.InitializeComponent();
             MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; // this ensures that right at the start of the app, the first item in the navigation view is already selected
 
+            AppWindow.SetIcon("Assets/FluentHwInfo.ico");
+
             // set title bar color to system default 
             AppWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
 
             // set the start size of the whole app window
-            this.SetWindowSize(675, 400);
+            this.SetWindowSize(660, 400);
 
             // set the min size of whole app window
             var manager = WinUIEx.WindowManager.Get(this);
-            manager.MinWidth = 675;
+            manager.MinWidth = 660;
             manager.MinHeight = 400;
         }
 

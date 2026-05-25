@@ -108,6 +108,7 @@
                                 Margin="10,0,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
+                                FontSize="13"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Style="{StaticResource BodyTextBlockStyle}"
                                 Text="{x:Bind CurrentValue, Mode=OneWay}" />
@@ -117,6 +118,7 @@
                                 Margin="10,0,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
+                                FontSize="13"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Style="{StaticResource BodyTextBlockStyle}"
                                 Text="{x:Bind MinimumValue, Mode=OneWay}" />
@@ -126,6 +128,7 @@
                                 Margin="10,0,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
+                                FontSize="13"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Style="{StaticResource BodyTextBlockStyle}"
                                 Text="{x:Bind MaximumValue, Mode=OneWay}" />
@@ -135,6 +138,7 @@
                                 Margin="10,0,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
+                                FontSize="13"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Style="{StaticResource BodyTextBlockStyle}"
                                 Text="{x:Bind AverageValue, Mode=OneWay}" />

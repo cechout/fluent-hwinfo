@@ -18,7 +18,7 @@
             x:Name="MainNavigationView"
             IsBackButtonVisible="Collapsed"
             IsSettingsVisible="False"
-            OpenPaneLength="170"
+            OpenPaneLength="150"
             PaneDisplayMode="Left"
             SelectionChanged="MainNavigationView_SelectionChanged">
 
@@ -27,14 +27,14 @@
                 <!--  CPU Item  -->
                 <NavigationViewItem Content="CPU" Tag="CPU">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE950;" />
+                        <FontIcon Glyph="&#xF120;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
                 <!--  GPU Item  -->
                 <NavigationViewItem Content="GPU" Tag="GPU">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE7FC;" />
+                        <FontIcon Glyph="&#xF120;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
