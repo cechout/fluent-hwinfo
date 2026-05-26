@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:FluentHwInfo.Views"
+    xmlns:lvc="using:LiveChartsCore.SkiaSharpView.WinUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="WidgetWindow"
     mc:Ignorable="d">
@@ -34,12 +35,31 @@
             Grid.Row="1"
             Padding="16"
             Spacing="12">
+
             <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="CPU PACKAGE" />
             <TextBlock
                 x:Name="CpuPowerValue"
                 FontSize="28"
                 FontWeight="SemiBold"
                 Text="45.2 W" />
+
+            <Border
+                Padding="0,0,8,0"
+                BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+
+                <lvc:CartesianChart
+                    Height="150"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent"
+                    DrawMargin="{x:Bind ChartMargin}"
+                    Series="{x:Bind Series}"
+                    TooltipPosition="Auto"
+                    XAxes="{x:Bind XAxes}"
+                    YAxes="{x:Bind YAxes}" />
+            </Border>
+
 
             <Button
                 HorizontalAlignment="Right"

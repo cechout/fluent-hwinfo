@@ -37,6 +37,7 @@
             x:Name="MainNavigationView"
             Grid.Row="1"
             IsBackButtonVisible="Collapsed"
+            IsPaneOpen="False"
             IsSettingsVisible="False"
             OpenPaneLength="150"
             PaneDisplayMode="Left"

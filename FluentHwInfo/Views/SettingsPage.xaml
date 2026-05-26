@@ -51,8 +51,8 @@
                 Header="Update Interval"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE916;}">
                 <ComboBox
+                    x:Name="IntervalComboBox"
                     Width="150"
-                    SelectedIndex="0"
                     SelectionChanged="IntervalComboBox_SelectionChanged">
                     <ComboBoxItem Content="100ms" Tag="100" />
                     <ComboBoxItem Content="250ms" Tag="250" />

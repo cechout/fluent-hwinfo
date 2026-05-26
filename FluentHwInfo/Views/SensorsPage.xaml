@@ -18,7 +18,6 @@
         <ScrollViewer Grid.Row="0" Padding="16,0,16,0">
 
             <ItemsControl ItemsSource="{x:Bind ViewModel.HardwareGroups, Mode=OneWay}">
-
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="local1:HardwareGroupViewModel">
 
@@ -54,32 +53,31 @@
 
                                         <TextBlock
                                             Grid.Column="0"
-                                            Style="{StaticResource Font_TextBlockOutputDisplay}"
+                                            Style="{ThemeResource BodyStrongTextBlockStyle}"
                                             Text="Sensor" />
                                         <TextBlock
                                             Grid.Column="1"
                                             HorizontalAlignment="Right"
-                                            Style="{StaticResource Font_TextBlockOutputDisplay}"
+                                            Style="{ThemeResource BodyStrongTextBlockStyle}"
                                             Text="Current" />
                                         <TextBlock
                                             Grid.Column="2"
                                             HorizontalAlignment="Right"
-                                            Style="{StaticResource Font_TextBlockOutputDisplay}"
+                                            Style="{ThemeResource BodyStrongTextBlockStyle}"
                                             Text="Min" />
                                         <TextBlock
                                             Grid.Column="3"
                                             HorizontalAlignment="Right"
-                                            Style="{StaticResource Font_TextBlockOutputDisplay}"
+                                            Style="{ThemeResource BodyStrongTextBlockStyle}"
                                             Text="Max" />
                                         <TextBlock
                                             Grid.Column="4"
                                             HorizontalAlignment="Right"
-                                            Style="{StaticResource Font_TextBlockOutputDisplay}"
+                                            Style="{ThemeResource BodyStrongTextBlockStyle}"
                                             Text="Avg" />
                                     </Grid>
 
                                     <!--  Dividing Border  -->
-                                    <!--  here the distance from the dividing border to the ListView content can be set  -->
                                     <Border Height="1" Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
 
                                     <!--  The actual ListView with all the Sensors  -->
@@ -104,13 +102,16 @@
 
                                                     <TextBlock
                                                         Grid.Column="0"
+                                                        HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         Style="{ThemeResource BodyTextBlockStyle}"
                                                         Text="{x:Bind Name, Mode=OneWay}" />
                                                     <TextBlock
                                                         Grid.Column="1"
                                                         HorizontalAlignment="Right"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                         Style="{ThemeResource BodyTextBlockStyle}"
                                                         Text="{x:Bind CurrentValue, Mode=OneWay}" />
@@ -118,6 +119,7 @@
                                                         Grid.Column="2"
                                                         HorizontalAlignment="Right"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                         Style="{ThemeResource BodyTextBlockStyle}"
                                                         Text="{x:Bind MinimumValue, Mode=OneWay}" />
@@ -125,6 +127,7 @@
                                                         Grid.Column="3"
                                                         HorizontalAlignment="Right"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                         Style="{ThemeResource BodyTextBlockStyle}"
                                                         Text="{x:Bind MaximumValue, Mode=OneWay}" />
@@ -132,6 +135,7 @@
                                                         Grid.Column="4"
                                                         HorizontalAlignment="Right"
                                                         VerticalAlignment="Center"
+                                                        FontSize="13"
                                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                         Style="{ThemeResource BodyTextBlockStyle}"
                                                         Text="{x:Bind AverageValue, Mode=OneWay}" />
@@ -160,11 +164,13 @@
                 Orientation="Horizontal"
                 Spacing="8">
 
+                <!--  Reset Min/Max Button  -->
                 <Button
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
                     Content="Reset Min/Max" />
 
+                <!--  Pin to Widget Button  -->
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
@@ -182,7 +188,5 @@
                 </Button>
             </StackPanel>
         </Border>
-
-
     </Grid>
 </Page>

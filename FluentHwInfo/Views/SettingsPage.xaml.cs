@@ -10,6 +10,26 @@ namespace FluentHwInfo.Views
         public SettingsPage()
         {
             this.InitializeComponent();
+
+            // every time the page is created, call this new method to restore the last selected values in the combo boxes
+            RestoreIntervalSelection();
+        }
+
+        private void RestoreIntervalSelection()
+        {
+            // we read the current interval value from the HardwareMonitorService instance
+            int currentInterval = HardwareMonitorService.Instance.UpdateIntervalMs;
+
+            // we search through all the items in the IntervalComboBox and compare their Tag with the current interval value
+            foreach (ComboBoxItem item in IntervalComboBox.Items)
+            {
+                if (item.Tag?.ToString() == currentInterval.ToString())
+                {
+                    // match found -> activate the item
+                    IntervalComboBox.SelectedItem = item;
+                    break;
+                }
+            }
         }
 
         private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
