@@ -74,7 +74,15 @@ namespace FluentHwInfo.Services
         // "public event Action<double>? CpuIaPowerUpdated;" and so on
         public event Action<List<SensorData>>? HardwareDataUpdated;
 
-        public HardwareMonitorService()
+        // now we make this class a singleton, because we want to have only one instance of this service that runs in the
+        // background and updates the sensor values
+        private static readonly HardwareMonitorService _instance = new HardwareMonitorService();
+        public static HardwareMonitorService Instance => _instance;
+
+        // now private constructor, we want to prevent the creation of multiple instances of this service, because
+        // because we want to change the update interval and stop the monitoring from the settings page, and if we have multiple instances, we would
+        // have problems to adress the instances
+        private HardwareMonitorService()
         {
             _computer = new Computer
             {

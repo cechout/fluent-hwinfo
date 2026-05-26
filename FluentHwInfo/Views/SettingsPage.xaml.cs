@@ -1,3 +1,4 @@
+using FluentHwInfo.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
@@ -37,11 +38,10 @@ namespace FluentHwInfo.Views
             {
                 if (selectedItem.Tag != null && int.TryParse(selectedItem.Tag.ToString(), out int newIntervalMs))
                 {
-                    // TODO: Pass the new milliseconds value (newIntervalMs) to your HardwareMonitorService.
-                    // Tip for later: Since your SensorsViewModel currently creates its own local instance of the service,
-                    // it makes sense to provide the service as an app-wide singleton (e.g., in App.xaml.cs),
-                    // so that the SettingsPage can throttle or accelerate the same engine.
-                    System.Diagnostics.Debug.WriteLine($"Engine-Polling-Intervall geändert auf: {newIntervalMs} ms");
+                    // we access the one HardwareMonitorService instance and change the interval at runtime
+                    HardwareMonitorService.Instance.UpdateIntervalMs = newIntervalMs;
+
+                    //System.Diagnostics.Debug.WriteLine($"Polling-Intervall changed to: {newIntervalMs} ms");
                 }
             }
         }

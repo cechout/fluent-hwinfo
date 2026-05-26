@@ -54,9 +54,11 @@
                     Width="150"
                     SelectedIndex="0"
                     SelectionChanged="IntervalComboBox_SelectionChanged">
-                    <ComboBoxItem Content="Fast (500ms)" Tag="500" />
-                    <ComboBoxItem Content="Normal (1000ms)" Tag="1000" />
-                    <ComboBoxItem Content="Slow (2000ms)" Tag="2000" />
+                    <ComboBoxItem Content="100ms" Tag="100" />
+                    <ComboBoxItem Content="250ms" Tag="250" />
+                    <ComboBoxItem Content="500ms" Tag="500" />
+                    <ComboBoxItem Content="1000ms" Tag="1000" />
+                    <ComboBoxItem Content="2000ms" Tag="2000" />
                 </ComboBox>
             </controls:SettingsCard>
 

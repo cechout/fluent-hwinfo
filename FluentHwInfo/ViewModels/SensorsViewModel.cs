@@ -45,7 +45,8 @@ namespace FluentHwInfo.ViewModels
             // grabs the UI thread directly at startup
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
-            _service = new HardwareMonitorService();
+            // we get the one singe instance of the HardwareMonitorService
+            _service = HardwareMonitorService.Instance;
 
             // we subscribe to the one big master event from HardwareMonitorService
             _service.HardwareDataUpdated += OnHardwareDataUpdated;
