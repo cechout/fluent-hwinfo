@@ -82,9 +82,10 @@
 
                                     <!--  The actual ListView with all the Sensors  -->
                                     <ListView
-                                        Padding="2,2,2,6"
+                                        Padding="2,2,2,4"
                                         HorizontalContentAlignment="Stretch"
                                         ItemsSource="{x:Bind Sensors, Mode=OneWay}"
+                                        SelectionChanged="SensorsListView_SelectionChanged"
                                         SelectionMode="Multiple">
 
                                         <ListView.ItemTemplate>

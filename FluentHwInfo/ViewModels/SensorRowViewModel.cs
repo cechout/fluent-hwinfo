@@ -29,6 +29,9 @@ namespace FluentHwInfo.ViewModels
         private string _maximumValue = "-";
         private string _averageValue = "-";
 
+        // tracks the ui selection state for the ListView checkbox
+        private bool _isSelected;
+
         private double _min = double.MaxValue;
         private double _max = double.MinValue;
         private double _sum = 0;
@@ -91,6 +94,20 @@ namespace FluentHwInfo.ViewModels
             {
                 _averageValue = value;
                 OnPropertyChanged();
+            }
+        }
+
+        // tracks the ui selection state for the ListView checkbox
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged();
+                }
             }
         }
 

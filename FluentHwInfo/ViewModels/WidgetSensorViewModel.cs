@@ -15,13 +15,14 @@ namespace FluentHwInfo.ViewModels
     {
         // fields
         private const int MaxDataPoints = 50;
-        private string _sensorName;
+        public string SensorId { get; } // This is the unique hardware identifier (e.g., "/intelcpu/0/load/1")
+        private string _sensorName = "not provided";
         public string SensorName
         {
             get => _sensorName;
             set { _sensorName = value; OnPropertyChanged(); }
         }
-        private string _currentValueText;
+        private string _currentValueText = "-";
         public string CurrentValueText
         {
             get => _currentValueText;
@@ -36,9 +37,10 @@ namespace FluentHwInfo.ViewModels
         public LiveChartsCore.Measure.Margin ChartMargin { get; set; } = new LiveChartsCore.Measure.Margin(0);
 
         // constructor
-        // takes the sensor name (e.g. "CPU Power") as parameter, so we can display it in the UI
-        public WidgetSensorViewModel(string sensorName)
+        // takes the unique sensor ID and the display name as parameter, so we can display it in the UI
+        public WidgetSensorViewModel(string sensorId, string sensorName)
         {
+            SensorId = sensorId;
             SensorName = sensorName;
             CurrentValueText = "..."; // placeholder text until we have the first value
 

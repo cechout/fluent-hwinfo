@@ -14,7 +14,7 @@ namespace FluentHwInfo.ViewModels
 
         private readonly DispatcherQueue _dispatcherQueue;
 
-        public WidgetViewModel()
+        public WidgetViewModel(List<SensorRowViewModel> selectedSensors) // Accept the injected list from the View layer
         {
             PinnedSensors = new ObservableCollection<WidgetSensorViewModel>();
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
@@ -22,9 +22,11 @@ namespace FluentHwInfo.ViewModels
             // subscribe to the HardwareDataUpdated event of the HardwareMonitorService
             HardwareMonitorService.Instance.HardwareDataUpdated += OnHardwareDataUpdated;
 
-            // test
-            PinnedSensors.Add(new WidgetSensorViewModel("CPU Package"));
-            PinnedSensors.Add(new WidgetSensorViewModel("GPU Temperature"));
+            // Dynamically instantiate chart components based on the precise hardware IDs
+            foreach (var sensor in selectedSensors)
+            {
+                PinnedSensors.Add(new WidgetSensorViewModel(sensor.Id, sensor.Name));
+            }
         }
 
         // Event handler invoked by the HardwareMonitorService at the configured polling interval
@@ -50,12 +52,6 @@ namespace FluentHwInfo.ViewModels
                         // push the updated value and the formatted string to the individual sensor view model
                         pinnedSensor.AddDataPoint(realSensor.Value, $"{realSensor.Value:F1} {unit}");
                     }
-
-
-                    // test simulation
-                    //Random rnd = new Random();
-                    //double fakeValue = rnd.Next(40, 80) + rnd.NextDouble();
-                    //pinnedSensor.AddDataPoint(fakeValue, $"{fakeValue:F1} W");
                 }
             });
         }
