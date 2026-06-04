@@ -40,9 +40,8 @@ namespace FluentHwInfo.ViewModels
                 // we go through all pinned sensors and try to find their real counterparts in the HardwareMonitorService's sensor list
                 foreach (var pinnedSensor in PinnedSensors)
                 {
-                    // Query the incoming payload list for the matching sensor name
-                    // For production, matching by SensorData.Id is recommended over Name
-                    var realSensor = payload.FirstOrDefault(s => s.Name == pinnedSensor.SensorName);
+                    // Query the incoming payload list for the matching sensor ID
+                    var realSensor = payload.FirstOrDefault(s => s.Id == pinnedSensor.SensorId);
 
                     if (realSensor != null)
                     {
