@@ -85,6 +85,7 @@
                                         Padding="2,2,2,4"
                                         HorizontalContentAlignment="Stretch"
                                         ItemsSource="{x:Bind Sensors, Mode=OneWay}"
+                                        Loaded="SensorsListView_Loaded"
                                         SelectionChanged="SensorsListView_SelectionChanged"
                                         SelectionMode="Multiple">
 

@@ -20,9 +20,9 @@ namespace FluentHwInfo.Views
         {
             this.InitializeComponent();
 
-            // here we create the highest ViewModel
-            // once this happens, the HardwareMonitorService automatically starts its 500ms measurement loop in the background
-            ViewModel = new SensorsViewModel();
+            // change: we do not create a new ViewModel anymore
+            // we bind the UI simply to the immortal, central Singleton instance
+            ViewModel = SensorsViewModel.Instance;
         }
 
         // event handler triggered whenever a user checks or unchecks an item in ANY of the generated ListViews
@@ -90,6 +90,23 @@ namespace FluentHwInfo.Views
             };
 
             _currentWidgetWindow.Activate();
+        }
+
+        // gets called, as soon as a ListView finishes loading 
+        private void SensorsListView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (sender is ListView listView)
+            {
+                // Gehe durch alle Items, die diese spezifische ListView anzeigt
+                foreach (var item in listView.Items)
+                {
+                    if (item is SensorRowViewModel sensor && sensor.IsSelected)
+                    {
+                        // Zwingt die ListView, den UI-Haken wieder reinzusetzen
+                        listView.SelectedItems.Add(sensor);
+                    }
+                }
+            }
         }
     }
 }

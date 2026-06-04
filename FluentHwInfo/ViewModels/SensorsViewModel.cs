@@ -37,7 +37,21 @@ namespace FluentHwInfo.ViewModels
         // HardwareMonitorService event, when it has time to do so
         private DispatcherQueue _dispatcherQueue;
 
-        public SensorsViewModel()
+        // SensorsViewModel is now also a singleton
+        private static SensorsViewModel _instance;
+        public static SensorsViewModel Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new SensorsViewModel();
+                }
+                return _instance;
+            }
+        }
+
+        private SensorsViewModel()
         {
             // Initialize the new group list
             HardwareGroups = new ObservableCollection<HardwareGroupViewModel>();
