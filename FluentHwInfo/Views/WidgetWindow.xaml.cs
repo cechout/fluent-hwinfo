@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WinRT;
+using System.Runtime.InteropServices;
 
 namespace FluentHwInfo.Views
 {
@@ -29,6 +30,10 @@ namespace FluentHwInfo.Views
         private DesktopAcrylicController _acrylicController;
         private MicaController _micaController;
         private SystemBackdropConfiguration _configurationSource;
+
+        // import the Windows-API to calculate the screen scaling (100%, 125%, 150% etc.)
+        [DllImport("user32.dll")]
+        private static extern uint GetDpiForWindow(IntPtr hwnd);
 
 
         public WidgetWindow(List<SensorRowViewModel> selectedSensors)
@@ -49,9 +54,17 @@ namespace FluentHwInfo.Views
             // custom window settings
             _appWindow = this.AppWindow;
             ExtendsContentIntoTitleBar = true;
-            SetTitleBar(AppTitleBar); 
-            _appWindow.SetPresenter(AppWindowPresenterKind.CompactOverlay);
-            PositionWidgetTopRight(); // custom method to position window at top-right of the screen
+            SetTitleBar(CustomTitleBar);
+
+            var presenter = OverlappedPresenter.Create();
+            presenter.IsAlwaysOnTop = true; // replaces the CompactOverlay behavior
+            presenter.IsMaximizable = false; // no fullscreen button
+            presenter.IsMinimizable = false;  // no minimized button
+            presenter.IsResizable = true; // but our boy is now resizable
+            _appWindow.SetPresenter(presenter);
+
+            // we pass the number of sensors to the method for auto-sizing
+            PositionWidgetTopRight(selectedSensors.Count);
 
             // register the closed event to prevent memory leaks in the background service
             this.Closed += WidgetWindow_Closed;
@@ -132,21 +145,33 @@ namespace FluentHwInfo.Views
             _configurationSource = null;
         }
 
-        private void PositionWidgetTopRight()
+        private void PositionWidgetTopRight(int sensorCount)
         {
-            // get the size of the primary screen
+            // get window-handle and scale factor (DPI) 
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            uint dpi = GetDpiForWindow(hwnd);
+            double scaleFactor = dpi / 96.0; // 96 is the Windows standard for 100% I guess
+
+            // get display size (already in physical pixels)
             var displayArea = DisplayArea.Primary;
             int screenWidth = displayArea.WorkArea.Width;
+            int screenHeight = displayArea.WorkArea.Height;
 
-            int widgetWidth = 600;
-            int widgetHeight = 800;
+            // our XAML desired sizes (DIPs)
+            double desiredXamlWidth = 300; // width
+            double desiredXamlHeight = 40 + (sensorCount * 145); // height: titleBar (48?) + Padding(?) + (Sensors * 145) + Buffer(?)
 
-            // move the window to the right edge (with 10px margin)
+            // convert to physical pixels for the GPU based on the dpi scale factor
+            int physicalWidth = (int)(desiredXamlWidth * scaleFactor);
+            int physicalHeight = (int)(desiredXamlHeight * scaleFactor);
+            physicalHeight = Math.Min(physicalHeight, screenHeight - 40); // height should not be taller than the screen
+
+            // move and resize the window
             _appWindow.MoveAndResize(new Windows.Graphics.RectInt32(
-                screenWidth - widgetWidth - 10,
-                10,
-                widgetWidth,
-                widgetHeight));
+                screenWidth - physicalWidth - 10, // 10px margin from the right edge
+                10,                               // 10px margin from the top edge
+                physicalWidth,
+                physicalHeight));
         }
 
         private void BackToDashboard_Click(object sender, RoutedEventArgs e)
