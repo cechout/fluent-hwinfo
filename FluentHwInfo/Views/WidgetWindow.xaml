@@ -22,44 +22,44 @@
         <Grid
             x:Name="CustomTitleBar"
             Grid.Row="0"
-            Height="22"
+            Height="auto"
             Background="Transparent">
 
             <Border
                 Width="34"
                 Height="4"
-                Margin="0,4,0,0"
+                Margin="0,8,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Background="{ThemeResource TextFillColorTertiaryBrush}"
                 CornerRadius="2" />
+
+            <!--  back to app button currently in title bar too  -->
+            <Button
+                Width="32"
+                Height="22"
+                Margin="4,4,0,0"
+                Padding="0"
+                HorizontalAlignment="Left"
+                Click="BackToDashboard_Click"
+                Style="{StaticResource SubtleButtonStyle}"
+                ToolTipService.ToolTip="Back to Main Application">
+                <FontIcon
+                    FontSize="14"
+                    FontWeight="SemiLight"
+                    Glyph="&#xE944;" />
+            </Button>
         </Grid>
 
-        <!--  back to app button currently in title bar too  -->
-        <Button
-            Grid.Row="0"
-            Width="32"
-            Height="24"
-            Margin="4"
-            Padding="0"
-            HorizontalAlignment="Left"
-            Click="BackToDashboard_Click"
-            Style="{StaticResource SubtleButtonStyle}"
-            ToolTipService.ToolTip="Back to Main Application">
-            <FontIcon
-                FontSize="13"
-                FontWeight="SemiLight"
-                Glyph="&#xE944;" />
-        </Button>
 
-
+        <!--  the whole content with all LiveChart graphs  -->
         <ScrollViewer
             Grid.Row="1"
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
             <StackPanel
                 Grid.Row="1"
-                Padding="8,0,8,6"
+                Padding="4,0,4,4"
                 Spacing="0">
 
                 <ItemsControl ItemsSource="{x:Bind ViewModel.PinnedSensors, Mode=OneWay}">
@@ -73,16 +73,17 @@
                         <DataTemplate x:DataType="viewmodels:WidgetSensorViewModel">
 
                             <StackPanel
-                                Height="130"
+                                Height="106"
                                 Margin="0,0,0,0"
                                 Background="Transparent"
-                                Spacing="4">
+                                Spacing="3">
 
                                 <!--  status header with sensor name and current value  -->
                                 <Grid
-                                    Height="24"
-                                    Padding="0,0,6,0"
+                                    Height="22"
+                                    Padding="0,0,0,0"
                                     HorizontalAlignment="Stretch"
+                                    Background="Transparent"
                                     ColumnSpacing="0">
 
                                     <Grid.ColumnDefinitions>
@@ -103,8 +104,8 @@
                                         Visibility="Visible">
 
                                         <FontIcon
-                                            FontSize="16"
-                                            FontWeight="SemiBold"
+                                            FontSize="15"
+                                            FontWeight="Normal"
                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                             Glyph="&#xE90C;" />
                                     </Button>
@@ -112,12 +113,12 @@
                                     <!--  current max y-axis value  -->
                                     <TextBlock
                                         Grid.Column="1"
-                                        Padding="2,0,0,0"
+                                        Padding="0,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        FontSize="14"
+                                        FontSize="13"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                                        Style="{StaticResource BodyTextBlockStyle}"
                                         Text="{x:Bind ActualYMaxText, Mode=OneWay}" />
 
                                     <!--  sensor name  -->
@@ -125,19 +126,20 @@
                                         Grid.Column="2"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        FontSize="14"
+                                        FontSize="13"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                                        Style="{StaticResource BodyTextBlockStyle}"
                                         Text="{x:Bind SensorName, Mode=OneWay}" />
 
                                     <!--  current value  -->
                                     <TextBlock
                                         Grid.Column="2"
+                                        Padding="0,0,6,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
-                                        FontSize="14"
+                                        FontSize="13"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                                        Style="{StaticResource BodyTextBlockStyle}"
                                         Text="{x:Bind CurrentValueText, Mode=OneWay}" />
                                 </Grid>
 
@@ -152,8 +154,8 @@
                                     <Grid
                                         Grid.Column="0"
                                         Width="36"
-                                        Padding="0,0,4,0"
-                                        RowSpacing="4"
+                                        Padding="0,0,3,0"
+                                        RowSpacing="3"
                                         Visibility="{x:Bind ControlPanelVisibility, Mode=OneWay}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
@@ -204,7 +206,7 @@
                                         CornerRadius="4">
 
                                         <lvc:CartesianChart
-                                            Height="100"
+                                            Height="80"
                                             Margin="-6,0,-6,0"
                                             HorizontalAlignment="Stretch"
                                             AnimationsSpeed="00:00:00"

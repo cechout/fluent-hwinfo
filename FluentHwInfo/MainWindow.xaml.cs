@@ -23,10 +23,22 @@ namespace FluentHwInfo
 {
     public sealed partial class MainWindow : Window
     {
+        // we save here the current instance of the MainWindow class
+        public static MainWindow CurrentInstance { get; private set; }
+
         public MainWindow()
         {
             this.InitializeComponent();
-            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; // this ensures that right at the start of the app, the first item in the navigation view is already selected
+
+            // instance management
+            CurrentInstance = this;
+            this.Closed += (s, args) =>
+            {
+                CurrentInstance = null;
+            };
+
+            // this ensures that right at the start of the app, the first item in the navigation view is already selected
+            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; 
 
             //AppWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
             AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
@@ -40,11 +52,11 @@ namespace FluentHwInfo
             }
 
             // set the start size of the whole app window
-            this.SetWindowSize(660, 400);
+            this.SetWindowSize(750, 450);
 
             // set the min size of whole app window
             var manager = WinUIEx.WindowManager.Get(this);
-            manager.MinWidth = 660;
+            manager.MinWidth = 600;
             manager.MinHeight = 400;
         }
 

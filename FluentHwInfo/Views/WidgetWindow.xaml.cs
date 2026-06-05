@@ -158,8 +158,8 @@ namespace FluentHwInfo.Views
             int screenHeight = displayArea.WorkArea.Height;
 
             // our XAML desired sizes (DIPs)
-            double desiredXamlWidth = 350; // width
-            double desiredXamlHeight = 44 + (sensorCount * (130 + 8)); // height: titleBar (48?) + Padding(?) + (Sensors * 130) + Buffer(?)
+            double desiredXamlWidth = 310; // width
+            double desiredXamlHeight = 31 + (sensorCount * (106 + 8)); // height: titleBar (48?) + Padding(?) + (Sensors * 130) + Buffer(?)
 
             // convert to physical pixels for the GPU based on the dpi scale factor
             int physicalWidth = (int)(desiredXamlWidth * scaleFactor);
@@ -176,7 +176,21 @@ namespace FluentHwInfo.Views
 
         private void BackToDashboard_Click(object sender, RoutedEventArgs e)
         {
-            // App.MainWindow.Activate();
+            // check if the main window is still open; 
+            if (MainWindow.CurrentInstance != null)
+            {
+                // if yes, just bring it to the front
+                MainWindow.CurrentInstance.Activate();
+            }
+            else
+            {
+                // if not, we just create a new one (the app is still running because the WidgetWindow is open, so
+                // we dont need to worry about the shutdown mode)
+                var newMainWindow = new MainWindow();
+                newMainWindow.Activate();
+            }
+
+            // close widget window
             this.Close();
         }
 

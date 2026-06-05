@@ -128,7 +128,7 @@ namespace FluentHwInfo.ViewModels
                     Fill = gradientFill,
                     GeometrySize = 0, // 0: no graph points, >=1: size of graph points
                     LineSmoothness = 0.4,
-                    Stroke = new SolidColorPaint(SKColors.DodgerBlue) { StrokeThickness = 2 },
+                    Stroke = new SolidColorPaint(SKColors.DodgerBlue) { StrokeThickness = 1 },
                     DataPadding = new LvcPoint(0, 0) // graph padding
                 }
             };

@@ -33,105 +33,66 @@
                                 <ComboBoxItem>Custom Selection</ComboBoxItem>
                             </ComboBox>
 
+                            <!--  items header  -->
                             <controls:SettingsExpander.ItemsHeader>
-                                <Grid Margin="48,12,24,8">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*" MinWidth="140" />
-                                        <ColumnDefinition Width="*" MinWidth="65" />
-                                        <ColumnDefinition Width="*" MinWidth="65" />
-                                        <ColumnDefinition Width="*" MinWidth="65" />
-                                        <ColumnDefinition Width="*" MinWidth="65" />
-                                    </Grid.ColumnDefinitions>
+                                <controls:SettingsCard
+                                    MinHeight="0"
+                                    Padding="16,12,16,8"
+                                    HorizontalContentAlignment="Stretch"
+                                    Background="{ThemeResource ControlFillColorDisabledBrush}"
+                                    BorderThickness="0"
+                                    ContentAlignment="Vertical"
+                                    CornerRadius="0">
 
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                        Text="Sensor" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Right"
-                                        Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                        Text="Current" />
-                                    <TextBlock
-                                        Grid.Column="2"
-                                        HorizontalAlignment="Right"
-                                        Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                        Text="Min" />
-                                    <TextBlock
-                                        Grid.Column="3"
-                                        HorizontalAlignment="Right"
-                                        Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                        Text="Max" />
-                                    <TextBlock
-                                        Grid.Column="4"
-                                        HorizontalAlignment="Right"
-                                        Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                        Text="Avg" />
-                                </Grid>
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" MinWidth="140" />
+                                            <ColumnDefinition Width="*" MinWidth="65" />
+                                            <ColumnDefinition Width="*" MinWidth="65" />
+                                            <ColumnDefinition Width="*" MinWidth="65" />
+                                            <ColumnDefinition Width="*" MinWidth="65" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            Margin="36,0,0,0"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="Sensor" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="Current" />
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="Min" />
+                                        <TextBlock
+                                            Grid.Column="3"
+                                            HorizontalAlignment="Right"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="Max" />
+                                        <TextBlock
+                                            Grid.Column="4"
+                                            HorizontalAlignment="Right"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="Avg" />
+                                    </Grid>
+
+                                </controls:SettingsCard>
                             </controls:SettingsExpander.ItemsHeader>
 
+                            <!--  items  -->
                             <controls:SettingsExpander.ItemTemplate>
                                 <DataTemplate x:DataType="local1:SensorRowViewModel">
 
-                                    <controls:SettingsCard
-                                        MinHeight="0"
-                                        Padding="16,4,16,4"
-                                        HorizontalContentAlignment="Stretch"
-                                        ContentAlignment="Vertical">
-
-                                        <Grid HorizontalAlignment="Stretch">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="2*" MinWidth="140" />
-                                                <ColumnDefinition Width="*" MinWidth="65" />
-                                                <ColumnDefinition Width="*" MinWidth="65" />
-                                                <ColumnDefinition Width="*" MinWidth="65" />
-                                                <ColumnDefinition Width="*" MinWidth="65" />
-                                            </Grid.ColumnDefinitions>
-
-                                            <CheckBox
-                                                Grid.Column="0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                Content="{x:Bind Name, Mode=OneWay}"
-                                                FontSize="13"
-                                                IsChecked="{x:Bind IsSelected, Mode=TwoWay}"
-                                                Style="{ThemeResource BodyStrongTextBlockStyle}" />
-
-                                            <TextBlock
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                                Text="{x:Bind CurrentValue, Mode=OneWay}" />
-                                            <TextBlock
-                                                Grid.Column="2"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                                Text="{x:Bind MinimumValue, Mode=OneWay}" />
-                                            <TextBlock
-                                                Grid.Column="3"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                                Text="{x:Bind MaximumValue, Mode=OneWay}" />
-                                            <TextBlock
-                                                Grid.Column="4"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                Style="{ThemeResource BodyStrongTextBlockStyle}"
-                                                Text="{x:Bind AverageValue, Mode=OneWay}" />
-                                        </Grid>
-
-                                    </controls:SettingsCard>
+                                    <local:SensorCardControl Margin="0,1,0,0" ViewModel="{x:Bind}" />
 
                                 </DataTemplate>
                             </controls:SettingsExpander.ItemTemplate>

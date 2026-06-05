@@ -20,6 +20,7 @@
     <None Remove="Assets\FluentHwInfo.ico" />
     <None Remove="Assets\IconDraft31.ico" />
     <None Remove="Assets\SplashScreen.ico" />
+    <None Remove="Views\SensorCardControl.xaml" />
     <None Remove="Views\SensorsPage.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
     <None Remove="Views\WidgetWindow.xaml" />
@@ -63,6 +64,11 @@
     <Content Update="Assets\FluentHwInfo.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\SensorCardControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\SettingsPage.xaml">
