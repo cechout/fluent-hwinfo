@@ -70,11 +70,12 @@
                 Style="{StaticResource BodyStrongTextBlockStyle}"
                 Text="Widget Appearance" />
 
-            <!--  general widget setting card  -->
-            <controls:SettingsCard
-                Description="Choose the transparency effect for the widget window."
+            <!--  background material  -->
+            <controls:SettingsExpander
+                Description="Choose the transparency effect and color for the widget window."
                 Header="Background Material"
-                HeaderIcon="{ui:FontIcon Glyph=&#xEF1F;}">
+                HeaderIcon="{ui:FontIcon Glyph=&#xEF1F;}"
+                IsExpanded="True">
 
                 <ComboBox
                     x:Name="BackdropComboBox"
@@ -84,31 +85,9 @@
                     <ComboBoxItem Content="System Mica" Tag="Mica" />
                     <ComboBoxItem Content="Solid (No Blur)" Tag="None" />
                 </ComboBox>
-            </controls:SettingsCard>
-
-            <!--  solid settings card  -->
-            <controls:SettingsExpander
-                x:Name="SolidSettingsExpander"
-                Header="Solid Background Settings"
-                HeaderIcon="{ui:FontIcon Glyph=&#xE771;}"
-                IsExpanded="False">
 
                 <controls:SettingsExpander.Items>
-                    <controls:SettingsCard Description="Select the exact color for the widget background." Header="Background Color">
-                        <controls:ColorPickerButton x:Name="SolidColorPicker" />
-                    </controls:SettingsCard>
-                </controls:SettingsExpander.Items>
-            </controls:SettingsExpander>
-
-            <!--  acrylic settings card  -->
-            <controls:SettingsExpander
-                x:Name="AcrylicSettingsExpander"
-                Header="Acrylic Settings"
-                HeaderIcon="{ui:FontIcon Glyph=&#xE771;}"
-                IsExpanded="False">
-
-                <controls:SettingsExpander.Items>
-                    <controls:SettingsCard Description="Adjust the color transparency." Header="Tint Opacity">
+                    <controls:SettingsCard Description="Adjust the color transparency (Acrylic only)." Header="Tint Opacity">
                         <Slider
                             x:Name="TintSlider"
                             Width="200"
@@ -119,7 +98,7 @@
                             ValueChanged="TintSlider_ValueChanged" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Adjust the brightness transparency." Header="Luminosity Opacity">
+                    <controls:SettingsCard Description="Adjust the brightness transparency (Acrylic only)." Header="Luminosity Opacity">
                         <Slider
                             x:Name="LuminositySlider"
                             Width="200"
@@ -130,7 +109,7 @@
                             ValueChanged="LuminositySlider_ValueChanged" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Choose between the Windows accent color or a custom color." Header="Tint Color Source">
+                    <controls:SettingsCard Description="Choose between the Windows accent color or a custom color." Header="Background Color Source">
                         <ComboBox
                             x:Name="ColorSourceComboBox"
                             Width="160"
@@ -140,13 +119,30 @@
                         </ComboBox>
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard
-                        x:Name="AcrylicCustomColorCard"
-                        Description="Select the custom tint color for the acrylic blur."
-                        Header="Custom Tint Color"
-                        Visibility="Visible">
+                    <controls:SettingsCard Description="Select the custom color for the background." Header="Custom Background Color">
+                        <controls:ColorPickerButton x:Name="WidgetBackgroundColorPicker" />
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
 
-                        <controls:ColorPickerButton x:Name="AcrylicColorPicker" />
+            <!--  graph fill color setting  -->
+            <controls:SettingsExpander
+                Description="Choose the color source for the LiveChart graph."
+                Header="Graph Fill Color"
+                HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
+                IsExpanded="True">
+
+                <ComboBox
+                    x:Name="GraphColorSourceComboBox"
+                    Width="160"
+                    SelectionChanged="GraphColorSourceComboBox_SelectionChanged">
+                    <ComboBoxItem Content="Windows Accent" Tag="Accent" />
+                    <ComboBoxItem Content="Custom Color" Tag="Custom" />
+                </ComboBox>
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Description="Select the custom fill color for the graph." Header="Custom Graph Color">
+                        <controls:ColorPickerButton x:Name="GraphColorPicker" />
                     </controls:SettingsCard>
                 </controls:SettingsExpander.Items>
             </controls:SettingsExpander>

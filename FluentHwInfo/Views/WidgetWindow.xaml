@@ -73,14 +73,14 @@
                         <DataTemplate x:DataType="viewmodels:WidgetSensorViewModel">
 
                             <StackPanel
-                                Height="106"
+                                Height="104"
                                 Margin="0,0,0,0"
                                 Background="Transparent"
                                 Spacing="3">
 
                                 <!--  status header with sensor name and current value  -->
                                 <Grid
-                                    Height="22"
+                                    Height="20"
                                     Padding="0,0,0,0"
                                     HorizontalAlignment="Stretch"
                                     Background="Transparent"
@@ -104,7 +104,7 @@
                                         Visibility="Visible">
 
                                         <FontIcon
-                                            FontSize="15"
+                                            FontSize="14"
                                             FontWeight="Normal"
                                             Glyph="&#xE90C;" />
                                     </Button>
@@ -115,8 +115,7 @@
                                         Padding="0,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        FontSize="13"
-                                        Style="{StaticResource BodyTextBlockStyle}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{x:Bind ActualYMaxText, Mode=OneWay}" />
 
                                     <!--  sensor name  -->
@@ -124,8 +123,7 @@
                                         Grid.Column="2"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        FontSize="13"
-                                        Style="{StaticResource BodyTextBlockStyle}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{x:Bind SensorName, Mode=OneWay}" />
 
                                     <!--  current value  -->
@@ -134,8 +132,7 @@
                                         Padding="0,0,6,0"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
-                                        FontSize="13"
-                                        Style="{StaticResource BodyTextBlockStyle}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{x:Bind CurrentValueText, Mode=OneWay}" />
                                 </Grid>
 
@@ -196,22 +193,25 @@
                                     <Border
                                         Grid.Column="1"
                                         Padding="0,0,0,0"
-                                        Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                                        BorderBrush="{ThemeResource ControlElevationBorderBrush}"
+                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource ControlStrokeColorSecondaryBrush}"
                                         BorderThickness="1"
                                         CornerRadius="4">
 
-                                        <lvc:CartesianChart
-                                            Height="80"
-                                            Margin="-6,0,-6,0"
-                                            HorizontalAlignment="Stretch"
-                                            AnimationsSpeed="00:00:00"
-                                            Background="Transparent"
-                                            DrawMargin="{x:Bind ChartMargin, Mode=OneWay}"
-                                            Series="{x:Bind Series, Mode=OneWay}"
-                                            TooltipPosition="Auto"
-                                            XAxes="{x:Bind XAxes, Mode=OneWay}"
-                                            YAxes="{x:Bind YAxes, Mode=OneWay}" />
+                                        <Grid CornerRadius="3.3">
+                                            <lvc:CartesianChart
+                                                Height="80"
+                                                Margin="-3,0,-3,-2"
+                                                HorizontalAlignment="Stretch"
+                                                AnimationsSpeed="00:00:00"
+                                                Background="Transparent"
+                                                CornerRadius="20"
+                                                DrawMargin="{x:Bind ChartMargin, Mode=OneWay}"
+                                                Series="{x:Bind Series, Mode=OneWay}"
+                                                TooltipPosition="Auto"
+                                                XAxes="{x:Bind XAxes, Mode=OneWay}"
+                                                YAxes="{x:Bind YAxes, Mode=OneWay}" />
+                                        </Grid>
                                     </Border>
                                 </Grid>
 

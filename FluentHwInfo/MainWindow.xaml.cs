@@ -34,13 +34,18 @@ namespace FluentHwInfo
             CurrentInstance = this;
             this.Closed += (s, args) =>
             {
+                FluentHwInfo.Services.SettingsService.Instance.ThemeChanged -= OnThemeChanged;
                 CurrentInstance = null;
             };
 
             // this ensures that right at the start of the app, the first item in the navigation view is already selected
-            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0]; 
+            MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0];
 
+            // hiervon hängt alles ab!
             //AppWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
+            AppWindow.TitleBar.PreferredTheme = TitleBarTheme.Light;
+
+
             AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 
             if (AppWindow.TitleBar.ExtendsContentIntoTitleBar)
@@ -51,6 +56,9 @@ namespace FluentHwInfo
 
             }
 
+            FluentHwInfo.Services.SettingsService.Instance.ThemeChanged += OnThemeChanged;
+            ApplyTitleBarTheme(FluentHwInfo.Services.SettingsService.Instance.AppTheme);
+
             // set the start size of the whole app window
             this.SetWindowSize(750, 450);
 
@@ -58,6 +66,24 @@ namespace FluentHwInfo
             var manager = WinUIEx.WindowManager.Get(this);
             manager.MinWidth = 600;
             manager.MinHeight = 400;
+        }
+
+        private void OnThemeChanged(string newTheme)
+        {
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                ApplyTitleBarTheme(newTheme);
+            });
+        }
+
+        private void ApplyTitleBarTheme(string themeTag)
+        {
+            AppWindow.TitleBar.PreferredTheme = themeTag switch
+            {
+                "Light" => Microsoft.UI.Windowing.TitleBarTheme.Light,
+                "Dark" => Microsoft.UI.Windowing.TitleBarTheme.Dark,
+                _ => Microsoft.UI.Windowing.TitleBarTheme.UseDefaultAppMode
+            };
         }
 
         // this method is called whenever an item in the navigation view is clicked

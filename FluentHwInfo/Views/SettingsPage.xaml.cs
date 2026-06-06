@@ -9,6 +9,7 @@ namespace FluentHwInfo.Views
     {
         // this is our "Türsteher" to prevent infinite loops when synchronizing the two color pickers
         private bool _isSyncingColor = false;
+        private bool _isLoading = true;
 
         public SettingsPage()
         {
@@ -18,15 +19,17 @@ namespace FluentHwInfo.Views
             RestoreIntervalSelection();
             RestoreWidgetSettings();
 
-            // we register the same event handler for both color pickers, so that we can react to changes in either of them with the
-            // same logic
-            SolidColorPicker.RegisterPropertyChangedCallback(
+            // Event Listener für den Widget Hintergrund Color Picker
+            WidgetBackgroundColorPicker.RegisterPropertyChangedCallback(
                 CommunityToolkit.WinUI.Controls.ColorPickerButton.SelectedColorProperty,
-                WidgetColorPicker_SelectedColorChanged);
+                WidgetBackgroundColorPicker_SelectedColorChanged);
 
-            AcrylicColorPicker.RegisterPropertyChangedCallback(
+            // NEU: Event Listener für den neuen Graph Color Picker
+            GraphColorPicker.RegisterPropertyChangedCallback(
                 CommunityToolkit.WinUI.Controls.ColorPickerButton.SelectedColorProperty,
-                WidgetColorPicker_SelectedColorChanged);
+                GraphColorPicker_SelectedColorChanged);
+
+            _isLoading = false;
         }
 
 
@@ -101,9 +104,6 @@ namespace FluentHwInfo.Views
             {
                 // just save the selected color source
                 SettingsService.Instance.UseAccentColor = (tag == "Accent");
-
-                // visibility of the custom color card depends on whether the user selected "custom" or not
-                AcrylicCustomColorCard.Visibility = (tag == "Custom") ? Visibility.Visible : Visibility.Collapsed;
             }
         }
         private void TintSlider_ValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
@@ -115,33 +115,44 @@ namespace FluentHwInfo.Views
         {
             SettingsService.Instance.LuminosityOpacity = (float)e.NewValue;
         }
-        private void WidgetColorPicker_SelectedColorChanged(DependencyObject sender, DependencyProperty dp)
+        private void WidgetBackgroundColorPicker_SelectedColorChanged(DependencyObject sender, DependencyProperty dp)
         {
-            // if we are already syncing the color, it means this event was fired by ourselves when we updated the other picker
-            if (_isSyncingColor) return;
+            if (_isLoading) return;
 
             if (sender is CommunityToolkit.WinUI.Controls.ColorPickerButton colorPicker)
             {
-                // activate doorman
-                _isSyncingColor = true;
+                // if user manually picks a color, we switch the source to "custom"
+                SettingsService.Instance.UseAccentColor = false;
+                ColorSourceComboBox.SelectedIndex = 1;
 
-                // save colour
                 SettingsService.Instance.CustomTintColor = colorPicker.SelectedColor;
+            }
+        }
+        private void GraphColorSourceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (GraphColorSourceComboBox.SelectedItem is ComboBoxItem item && item.Tag is string tag)
+            {
+                SettingsService.Instance.UseGraphAccentColor = (tag == "Accent");
+            }
+        }
 
-                // update the other color picker to keep them in sync
-                if (sender == SolidColorPicker) AcrylicColorPicker.SelectedColor = colorPicker.SelectedColor;
-                if (sender == AcrylicColorPicker) SolidColorPicker.SelectedColor = colorPicker.SelectedColor;
+        private void GraphColorPicker_SelectedColorChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            if (_isLoading) return;
 
-                // deactivate doorman 
-                _isSyncingColor = false;
+            if (sender is CommunityToolkit.WinUI.Controls.ColorPickerButton colorPicker)
+            {
+                // if user picks a color for the graph, we switch the source to "custom"
+                SettingsService.Instance.UseGraphAccentColor = false;
+                GraphColorSourceComboBox.SelectedIndex = 1;
+
+                SettingsService.Instance.GraphCustomColor = colorPicker.SelectedColor;
             }
         }
         private void RestoreWidgetSettings()
         {
             ColorSourceComboBox.SelectedIndex = SettingsService.Instance.UseAccentColor ? 0 : 1;
-            AcrylicCustomColorCard.Visibility = SettingsService.Instance.UseAccentColor ? Visibility.Collapsed : Visibility.Visible;
 
-            // restore combo box selection 
             string currentBackdrop = SettingsService.Instance.BackdropType;
             foreach (ComboBoxItem item in BackdropComboBox.Items)
             {
@@ -152,12 +163,12 @@ namespace FluentHwInfo.Views
                 }
             }
 
-            // restore slider values & color pickers
             TintSlider.Value = SettingsService.Instance.TintOpacity;
             LuminositySlider.Value = SettingsService.Instance.LuminosityOpacity;
+            WidgetBackgroundColorPicker.SelectedColor = SettingsService.Instance.CustomTintColor;
 
-            SolidColorPicker.SelectedColor = SettingsService.Instance.CustomTintColor;
-            AcrylicColorPicker.SelectedColor = SettingsService.Instance.CustomTintColor;
+            GraphColorSourceComboBox.SelectedIndex = SettingsService.Instance.UseGraphAccentColor ? 0 : 1;
+            GraphColorPicker.SelectedColor = SettingsService.Instance.GraphCustomColor;
         }
     }
 }

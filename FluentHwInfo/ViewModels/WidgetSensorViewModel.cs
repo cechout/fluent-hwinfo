@@ -9,6 +9,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using Microsoft.UI.Xaml;
 using System.Linq;
+using FluentHwInfo.Services;
 
 namespace FluentHwInfo.ViewModels
 {
@@ -120,18 +121,14 @@ namespace FluentHwInfo.ViewModels
             );
 
             // the LiveCharts ISeries definition
-            Series = new ISeries[]
+            var lineSeries = new LineSeries<double?>
             {
-                new LineSeries<double?>
-                {
-                    Values = SensorData,
-                    Fill = gradientFill,
-                    GeometrySize = 0, // 0: no graph points, >=1: size of graph points
-                    LineSmoothness = 0.4,
-                    Stroke = new SolidColorPaint(SKColors.DodgerBlue) { StrokeThickness = 1 },
-                    DataPadding = new LvcPoint(0, 0) // graph padding
-                }
+                Values = SensorData,
+                GeometrySize = 0, // 0: no graph points, >=1: size of graph points
+                LineSmoothness = 0.4,
+                DataPadding = new LvcPoint(0, 0) // graph padding
             };
+            Series = new ISeries[] { lineSeries };
 
             // the LiveCharts y-axis definition
             _yAxis = new Axis
@@ -141,8 +138,58 @@ namespace FluentHwInfo.ViewModels
                 MaxLimit = null   // null means LiveCharts does Auto-Scaling (our initial value)
             };
             YAxes = new ICartesianAxis[] { _yAxis };
+
+            // we call this method to set the initial graph color based on the current settings
+            UpdateGraphColor(SettingsService.Instance.UseGraphAccentColor, SettingsService.Instance.GraphCustomColor);
+            SettingsService.Instance.GraphColorChanged += OnGraphColorChanged;
         }
 
+        private void OnGraphColorChanged(bool useAccent, Windows.UI.Color customColor)
+        {
+            UpdateGraphColor(useAccent, customColor);
+        }
+
+        private void UpdateGraphColor(bool useAccent, Windows.UI.Color customColor)
+        {
+            Windows.UI.Color targetWinColor;
+
+            if (useAccent)
+            {
+                // get windows accent color
+                targetWinColor = (Windows.UI.Color)Application.Current.Resources["SystemAccentColor"];
+            }
+            else
+            {
+                targetWinColor = customColor;
+            }
+
+            // transform in SKColor for SkiaSharp
+            SKColor baseColor = new SKColor(targetWinColor.R, targetWinColor.G, targetWinColor.B);
+
+            // get the line series
+            if (Series[0] is LineSeries<double?> lineSeries)
+            {
+                // 15 % alpha for the background (255 * 0.15 = ~38)
+                var gradientFill = new LinearGradientPaint(
+                    new[] { baseColor.WithAlpha(38), baseColor.WithAlpha(38) },
+                    new SKPoint(0.5f, 0),
+                    new SKPoint(0.5f, 1)
+                );
+
+                // 80 % alpha for the line (255 * 0.80 = ~204)
+                var stroke = new SolidColorPaint(baseColor.WithAlpha(204)) { StrokeThickness = 1 };
+
+                // assign
+                lineSeries.Fill = gradientFill;
+                lineSeries.Stroke = stroke;
+            }
+        }
+
+        // very important; so it does not fuck up again
+        public void Cleanup()
+        {
+            SettingsService.Instance.GraphColorChanged -= OnGraphColorChanged;
+        }
 
         public void AddDataPoint(double newValue, string formattedValueText)
         {

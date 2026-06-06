@@ -18,7 +18,7 @@
 
         <ScrollViewer Grid.Row="0" Padding="16,0,16,0">
 
-            <ItemsControl ItemsSource="{x:Bind ViewModel.HardwareGroups, Mode=OneWay}">
+            <ItemsControl Margin="0,0,0,16" ItemsSource="{x:Bind ViewModel.HardwareGroups, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="local1:HardwareGroupViewModel">
 
@@ -28,10 +28,10 @@
                             IsExpanded="False"
                             ItemsSource="{x:Bind Sensors, Mode=OneWay}">
 
-                            <ComboBox MinWidth="150" SelectedIndex="0">
+                            <!--<ComboBox MinWidth="150" SelectedIndex="0">
                                 <ComboBoxItem>All Sensors</ComboBoxItem>
                                 <ComboBoxItem>Custom Selection</ComboBoxItem>
-                            </ComboBox>
+                            </ComboBox>-->
 
                             <!--  items header  -->
                             <controls:SettingsExpander.ItemsHeader>
@@ -39,7 +39,7 @@
                                     MinHeight="0"
                                     Padding="16,12,16,8"
                                     HorizontalContentAlignment="Stretch"
-                                    Background="{ThemeResource ControlFillColorDisabledBrush}"
+                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderThickness="0"
                                     ContentAlignment="Vertical"
                                     CornerRadius="0">
@@ -92,7 +92,7 @@
                             <controls:SettingsExpander.ItemTemplate>
                                 <DataTemplate x:DataType="local1:SensorRowViewModel">
 
-                                    <local:SensorCardControl Margin="0,1,0,0" ViewModel="{x:Bind}" />
+                                    <local:SensorCardControl Margin="0,0,0,0" ViewModel="{x:Bind}" />
 
                                 </DataTemplate>
                             </controls:SettingsExpander.ItemTemplate>
@@ -100,6 +100,8 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+
         </ScrollViewer>
 
         <Border
@@ -107,7 +109,7 @@
             Padding="12,12,16,12"
             Background="{ThemeResource ControlFillColorTertiaryBrush}"
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-            BorderThickness="1">
+            BorderThickness="0,1,0,0">
 
             <StackPanel
                 HorizontalAlignment="Right"

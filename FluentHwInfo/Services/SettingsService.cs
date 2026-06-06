@@ -14,6 +14,7 @@ namespace FluentHwInfo.Services
         public event Action<string> BackdropTypeChanged;
         public event Action<float, float> OpacityChanged;
         public event Action<bool, Color> TintColorChanged;
+        public event Action<bool, Windows.UI.Color> GraphColorChanged;
 
         // fields
         private string _appTheme = "Default";
@@ -22,6 +23,8 @@ namespace FluentHwInfo.Services
         private float _luminosityOpacity = 0.2f;
         private bool _useAccentColor = true;
         private Color _customTintColor = Color.FromArgb(255, 128, 128, 128);
+        private bool _useGraphAccentColor = true;
+        private Windows.UI.Color _graphCustomColor = Microsoft.UI.Colors.LightBlue;
 
         private SettingsService() { }
 
@@ -100,6 +103,34 @@ namespace FluentHwInfo.Services
                 {
                     _customTintColor = value;
                     TintColorChanged?.Invoke(_useAccentColor, _customTintColor);
+                }
+            }
+        }
+
+        public bool UseGraphAccentColor
+        {
+            get => _useGraphAccentColor;
+            set
+            {
+                if (_useGraphAccentColor != value)
+                {
+                    _useGraphAccentColor = value;
+                    // Event abfeuern!
+                    GraphColorChanged?.Invoke(_useGraphAccentColor, _graphCustomColor);
+                }
+            }
+        }
+
+        public Windows.UI.Color GraphCustomColor
+        {
+            get => _graphCustomColor;
+            set
+            {
+                if (_graphCustomColor != value)
+                {
+                    _graphCustomColor = value;
+                    // Event abfeuern!
+                    GraphColorChanged?.Invoke(_useGraphAccentColor, _graphCustomColor);
                 }
             }
         }

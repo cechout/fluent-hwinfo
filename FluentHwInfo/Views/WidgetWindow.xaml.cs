@@ -84,6 +84,7 @@ namespace FluentHwInfo.Views
 
         private void ApplyTheme(string themeTag)
         {
+            // 1. Die XAML-Inhalte umschalten
             if (this.Content is FrameworkElement rootElement)
             {
                 rootElement.RequestedTheme = themeTag switch
@@ -91,6 +92,16 @@ namespace FluentHwInfo.Views
                     "Light" => ElementTheme.Light,
                     "Dark" => ElementTheme.Dark,
                     _ => ElementTheme.Default
+                };
+            }
+
+            if (_appWindow != null && _appWindow.TitleBar != null)
+            {
+                _appWindow.TitleBar.PreferredTheme = themeTag switch
+                {
+                    "Light" => Microsoft.UI.Windowing.TitleBarTheme.Light,
+                    "Dark" => Microsoft.UI.Windowing.TitleBarTheme.Dark,
+                    _ => Microsoft.UI.Windowing.TitleBarTheme.UseDefaultAppMode
                 };
             }
         }
@@ -144,10 +155,10 @@ namespace FluentHwInfo.Views
                 _acrylicController.LuminosityOpacity = SettingsService.Instance.LuminosityOpacity;
 
                 // 3. Optional fallback: Force the compositor to re-evaluate the configuration
-                if (_configurationSource != null)
-                {
-                    _acrylicController.SetSystemBackdropConfiguration(_configurationSource);
-                }
+                //if (_configurationSource != null)
+                //{
+                //    _acrylicController.SetSystemBackdropConfiguration(_configurationSource);
+                //}
             }
         }
 
@@ -198,7 +209,7 @@ namespace FluentHwInfo.Views
 
             // our XAML desired sizes (DIPs)
             double desiredXamlWidth = 310; // width
-            double desiredXamlHeight = 31 + (sensorCount * (106 + 8)); // height: titleBar (48?) + Padding(?) + (Sensors * 130) + Buffer(?)
+            double desiredXamlHeight = 30 + (sensorCount * (104 + 8)); // height: titleBar (48?) + Padding(?) + (Sensors * 130) + Buffer(?)
 
             // convert to physical pixels for the GPU based on the dpi scale factor
             int physicalWidth = (int)(desiredXamlWidth * scaleFactor);
@@ -229,8 +240,8 @@ namespace FluentHwInfo.Views
                 newMainWindow.Activate();
             }
 
-            // close widget window
-            this.Close();
+            // close widget window (do we want this?)
+            // this.Close();
         }
 
 

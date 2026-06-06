@@ -75,6 +75,11 @@ namespace FluentHwInfo.ViewModels
         public void Cleanup()
         {
             HardwareMonitorService.Instance.HardwareDataUpdated -= OnHardwareDataUpdated;
+
+            foreach (var sensor in PinnedSensors)
+            {
+                sensor.Cleanup();
+            }
         }
     }
 }

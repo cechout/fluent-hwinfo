@@ -9,39 +9,24 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <ToggleButton
-        MinHeight="0"
-        Padding="16,2,16,2"
-        HorizontalAlignment="Stretch"
-        HorizontalContentAlignment="Stretch"
-        BorderThickness="0"
-        CornerRadius="0"
-        IsChecked="{x:Bind ViewModel.IsSelected, Mode=TwoWay}">
+    <Grid
+        x:Name="RootGrid"
+        Background="Transparent"
+        PointerEntered="RootGrid_PointerEntered"
+        PointerExited="RootGrid_PointerExited"
+        PointerPressed="RootGrid_PointerPressed"
+        PointerReleased="RootGrid_PointerReleased"
+        Tapped="RootGrid_Tapped">
+        <Border
+            x:Name="CardBackground"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0" />
 
-        <ToggleButton.Resources>
-
-            <StaticResource x:Key="ToggleButtonForegroundChecked" ResourceKey="TextFillColorPrimaryBrush" />
-            <StaticResource x:Key="ToggleButtonForegroundCheckedPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
-            <StaticResource x:Key="ToggleButtonForegroundCheckedPressed" ResourceKey="TextFillColorSecondaryBrush" />
-
-            <StaticResource x:Key="ToggleButtonBackground" ResourceKey="ControlFillColorDisabledBrush" />
-            <StaticResource x:Key="ToggleButtonBackgroundPointerOver" ResourceKey="ControlFillColorSecondaryBrush" />
-            <StaticResource x:Key="ToggleButtonBackgroundPressed" ResourceKey="ControlFillColorTertiaryBrush" />
-
-            <StaticResource x:Key="ToggleButtonBackgroundChecked" ResourceKey="ControlFillColorSecondaryBrush" />
-            <StaticResource x:Key="ToggleButtonBackgroundCheckedPointerOver" ResourceKey="ControlFillColorTertiaryBrush" />
-            <StaticResource x:Key="ToggleButtonBackgroundCheckedPressed" ResourceKey="ControlFillColorDefaultBrush" />
-
-            <StaticResource x:Key="ToggleButtonBorderBrush" ResourceKey="CardStrokeColorDefaultBrush" />
-            <StaticResource x:Key="ToggleButtonBorderBrushPointerOver" ResourceKey="CardStrokeColorDefaultBrush" />
-            <StaticResource x:Key="ToggleButtonBorderBrushPressed" ResourceKey="CardStrokeColorDefaultBrush" />
-            <StaticResource x:Key="ToggleButtonBorderBrushChecked" ResourceKey="CardStrokeColorDefaultBrush" />
-            <StaticResource x:Key="ToggleButtonBorderBrushCheckedPointerOver" ResourceKey="CardStrokeColorDefaultBrush" />
-            <StaticResource x:Key="ToggleButtonBorderBrushCheckedPressed" ResourceKey="CardStrokeColorDefaultBrush" />
-
-        </ToggleButton.Resources>
-
-        <Grid HorizontalAlignment="Stretch">
+        <Grid
+            x:Name="CardContent"
+            Padding="16,2,16,2"
+            HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" MinWidth="140" />
                 <ColumnDefinition Width="*" MinWidth="65" />
@@ -97,5 +82,48 @@
                 Text="{x:Bind ViewModel.AverageValue, Mode=OneWay}" />
         </Grid>
 
-    </ToggleButton>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CardStates">
+
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Hover">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorSecondaryBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorTertiaryBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="0.7" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <VisualState x:Name="Checked">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorSecondaryBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedHover">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorTertiaryBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedPressed">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorDefaultBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="0.7" />
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
 </UserControl>
