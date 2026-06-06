@@ -7,24 +7,22 @@ namespace FluentHwInfo.Views
 {
     public sealed partial class SettingsPage : Page
     {
-        // this is our "Türsteher" to prevent infinite loops when synchronizing the two color pickers
-        private bool _isSyncingColor = false;
         private bool _isLoading = true;
 
         public SettingsPage()
         {
             this.InitializeComponent();
 
-            // every time the page is created, call this new method to restore the last selected values in the combo boxes
+            // restore the previous user selections
+            RestoreThemeSelection();
             RestoreIntervalSelection();
             RestoreWidgetSettings();
 
-            // Event Listener für den Widget Hintergrund Color Picker
+            // event listeners
             WidgetBackgroundColorPicker.RegisterPropertyChangedCallback(
                 CommunityToolkit.WinUI.Controls.ColorPickerButton.SelectedColorProperty,
                 WidgetBackgroundColorPicker_SelectedColorChanged);
 
-            // NEU: Event Listener für den neuen Graph Color Picker
             GraphColorPicker.RegisterPropertyChangedCallback(
                 CommunityToolkit.WinUI.Controls.ColorPickerButton.SelectedColorProperty,
                 GraphColorPicker_SelectedColorChanged);
@@ -36,6 +34,8 @@ namespace FluentHwInfo.Views
         // theme combo box
         private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (_isLoading) return;
+
             if (sender is ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
             {
                 string themeTag = selectedItem.Tag?.ToString();
@@ -52,6 +52,22 @@ namespace FluentHwInfo.Views
                         "Dark" => ElementTheme.Dark,
                         _ => ElementTheme.Default // system default
                     };
+                }
+            }
+        }
+        private void RestoreThemeSelection()
+        {
+            // we read the current theme value from the SettingsService
+            string currentTheme = SettingsService.Instance.AppTheme;
+
+            // we search through all the items in the ThemeComboBox and compare their Tag with the current theme
+            foreach (ComboBoxItem item in ThemeComboBox.Items)
+            {
+                if (item.Tag?.ToString() == currentTheme)
+                {
+                    // match found -> activate the item
+                    ThemeComboBox.SelectedItem = item;
+                    break;
                 }
             }
         }

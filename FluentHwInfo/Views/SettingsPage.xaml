@@ -34,7 +34,6 @@
                 <ComboBox
                     x:Name="ThemeComboBox"
                     Width="150"
-                    SelectedIndex="0"
                     SelectionChanged="ThemeComboBox_SelectionChanged">
                     <ComboBoxItem Content="System Default" Tag="Default" />
                     <ComboBoxItem Content="Light" Tag="Light" />
@@ -75,7 +74,7 @@
                 Description="Choose the transparency effect and color for the widget window."
                 Header="Background Material"
                 HeaderIcon="{ui:FontIcon Glyph=&#xEF1F;}"
-                IsExpanded="True">
+                IsExpanded="False">
 
                 <ComboBox
                     x:Name="BackdropComboBox"
@@ -130,7 +129,7 @@
                 Description="Choose the color source for the LiveChart graph."
                 Header="Graph Fill Color"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
-                IsExpanded="True">
+                IsExpanded="False">
 
                 <ComboBox
                     x:Name="GraphColorSourceComboBox"
