@@ -92,8 +92,20 @@
                             <controls:SettingsExpander.ItemTemplate>
                                 <DataTemplate x:DataType="local1:SensorRowViewModel">
 
-                                    <!--  we do not set the margin here, because the SensorCardControl does it itself  -->
-                                    <local:SensorCardControl Margin="0,0,0,0" ViewModel="{x:Bind}" />
+                                    <controls:SettingsCard
+                                        MinHeight="0"
+                                        Margin="0"
+                                        Padding="0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        ContentAlignment="Vertical"
+                                        CornerRadius="0">
+
+                                        <local:SensorCardControl HorizontalAlignment="Stretch" ViewModel="{x:Bind}" />
+
+                                    </controls:SettingsCard>
 
                                 </DataTemplate>
                             </controls:SettingsExpander.ItemTemplate>

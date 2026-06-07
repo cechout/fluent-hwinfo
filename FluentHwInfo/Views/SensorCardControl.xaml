@@ -7,10 +7,13 @@
     xmlns:local="using:FluentHwInfo.Views"
     xmlns:local1="using:FluentHwInfo.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    HorizontalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
     mc:Ignorable="d">
 
     <Grid
         x:Name="RootGrid"
+        HorizontalAlignment="Stretch"
         Background="Transparent"
         PointerEntered="RootGrid_PointerEntered"
         PointerExited="RootGrid_PointerExited"

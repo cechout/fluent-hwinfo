@@ -55,7 +55,7 @@ namespace FluentHwInfo
 
             }
             // size
-            this.SetWindowSize(750, 450);
+            this.SetWindowSize(700, 600);
             var manager = WinUIEx.WindowManager.Get(this);
             manager.MinWidth = 600;
             manager.MinHeight = 400;
