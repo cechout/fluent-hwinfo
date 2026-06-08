@@ -1,5 +1,4 @@
-<img width="2560" height="810" alt="frame" src="https://github.com/user-attachments/assets/f32d7421-bc9b-4619-95ab-ee8088829a16" />
-
+<img width="2560" height="810" alt="frame2" src="https://github.com/user-attachments/assets/4609864d-065d-4cfe-bc28-a97d35664f65" />
 
 ###
 Reading hardware sensors often results in cluttered and old-looking interfaces. This project aims to change that. 
