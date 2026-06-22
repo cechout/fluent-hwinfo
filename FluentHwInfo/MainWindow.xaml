@@ -7,6 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:FluentHwInfo"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:ui1="using:Windows.UI.Composition"
     xmlns:winex="using:WinUIEx"
     Title="FluentHwInfo"
     mc:Ignorable="d">
@@ -33,7 +35,7 @@
             </TitleBar.IconSource>
         </TitleBar>
 
-        <!--  navigation bar  -->
+        <!--  navigation view  -->
         <NavigationView
             x:Name="MainNavigationView"
             Grid.Row="1"
@@ -42,7 +44,8 @@
             IsSettingsVisible="False"
             OpenPaneLength="150"
             PaneDisplayMode="LeftCompact"
-            SelectionChanged="MainNavigationView_SelectionChanged">
+            SelectionChanged="MainNavigationView_SelectionChanged"
+            Visibility="Collapsed">
 
             <!--  sensor page  -->
             <NavigationView.MenuItems>
@@ -65,5 +68,53 @@
             <Frame x:Name="contentFrame" />
 
         </NavigationView>
+
+        <!--  loading status screen  -->
+        <Grid
+            x:Name="SplashOverlay"
+            Grid.Row="1"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+
+
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="20">
+
+                <!--  icon  -->
+                <Grid HorizontalAlignment="Center">
+                    <Border x:Name="ShadowReceiver" />
+                    <Image
+                        Width="100"
+                        Height="100"
+                        Source="/Assets/Icon/Icon.png">
+                        <ui:Effects.Shadow>
+                            <ui:AttachedDropShadow
+                                BlurRadius="12"
+                                CastTo="{x:Bind ShadowReceiver}"
+                                Opacity="0.3"
+                                Offset="0,4,0"
+                                Color="Black" />
+                        </ui:Effects.Shadow>
+                    </Image>
+                </Grid>
+
+                <ProgressBar
+                    x:Name="LoadingProgressBar"
+                    Width="200"
+                    Margin="0,10,0,0"
+                    Maximum="100"
+                    Minimum="0"
+                    Value="0" />
+
+                <TextBlock
+                    x:Name="LoadingStatusText"
+                    HorizontalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Style="{ThemeResource BodyLargeStrongTextBlockStyle}"
+                    Text="Starting Fluent HwInfo..." />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
