@@ -11,6 +11,24 @@
     HorizontalContentAlignment="Stretch"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+
+                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="CustomCheckedBackgroundBrush" Color="#19FFFFFF" />
+                    <SolidColorBrush x:Key="CustomCheckedHoverBrush" Color="#14FFFFFF" />
+                </ResourceDictionary>
+
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="CustomCheckedBackgroundBrush" Color="#FFF8F8F8" />
+                    <SolidColorBrush x:Key="CustomCheckedHoverBrush" Color="#FFFAFAFA" />
+                </ResourceDictionary>
+
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid
         x:Name="RootGrid"
         HorizontalAlignment="Stretch"
@@ -96,6 +114,8 @@
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="CardStates">
+
+                <!--  normal state  -->
                 <VisualState x:Name="Normal">
                     <VisualState.Setters>
                         <Setter Target="CardBackground.Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
@@ -115,15 +135,16 @@
                     </VisualState.Setters>
                 </VisualState>
 
+                <!--  checked state  -->
                 <VisualState x:Name="Checked">
                     <VisualState.Setters>
-                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorSecondaryBrush}" />
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource CustomCheckedBackgroundBrush}" />
                         <Setter Target="CardContent.Opacity" Value="1.0" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="CheckedHover">
                     <VisualState.Setters>
-                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorTertiaryBrush}" />
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource CustomCheckedHoverBrush}" />
                         <Setter Target="CardContent.Opacity" Value="1.0" />
                     </VisualState.Setters>
                 </VisualState>
