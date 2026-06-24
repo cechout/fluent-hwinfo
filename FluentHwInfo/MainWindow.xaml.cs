@@ -20,13 +20,27 @@ using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.ApplicationSettings;
 using WinUIEx;
+using System.Runtime.InteropServices;
 
 namespace FluentHwInfo
 {
     public sealed partial class MainWindow : Window
     {
-        public static MainWindow CurrentInstance { get; private set; } // we save here the current instance of the MainWindow class
+        // win32 api imports
+        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+        private const int GWL_EXSTYLE = -20;
+        private const int WS_EX_TOOLWINDOW = 0x00000080;
+        private const int WS_EX_NOACTIVATE = 0x08000000;
+
+
+        // properties and fields
+        public static MainWindow CurrentInstance { get; private set; } 
         private bool _isForceClosing = false;
+        private bool _isHardwareServiceLoaded = false;
+        private bool _isDashboardClosed = false;
         public XamlUICommand RestoreAppCommand { get; } = new XamlUICommand(); // restore
         public XamlUICommand ShowMainWindowCommand { get; } = new XamlUICommand(); // restore + navigate to SensorPage
         public XamlUICommand OpenSettingsCommand { get; } = new XamlUICommand(); // restore + navigate to SettingsPage
@@ -36,26 +50,15 @@ namespace FluentHwInfo
         // constructor
         public MainWindow()
         {
+            // initialization
             this.InitializeComponent();
             this.AppWindow.SetIcon("Assets\\Icon\\Icon.ico");
-
-            // instance management
             CurrentInstance = this;
-            this.Closed += (s, args) =>
-            {
-                FluentHwInfo.Services.SettingsService.Instance.ThemeChanged -= OnThemeChanged;
-                CurrentInstance = null;
-            };
-
-            // this ensures that right at the start of the app, the first item in the navigation view is already selected
-            // MainNavigationView.SelectedItem = MainNavigationView.MenuItems[0];
-            // for now we just leave it unselected
 
             // AppWindow configuration
             // theme 
             AppWindow.TitleBar.PreferredTheme = TitleBarTheme.UseDefaultAppMode;
             AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
-
             if (AppWindow.TitleBar.ExtendsContentIntoTitleBar)
             {
                 AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Standard;
@@ -65,25 +68,32 @@ namespace FluentHwInfo
             }
             // size
             this.SetWindowSize(690, 650);
-
+            // position
             this.CenterOnScreen();
             var currentPos = this.AppWindow.Position;
             // yea idk; might change this in future
             this.AppWindow.Move(new Windows.Graphics.PointInt32(currentPos.X - 400, currentPos.Y - 100));
-
+            // size
             var manager = WinUIEx.WindowManager.Get(this);
             manager.MinWidth = 600;
             manager.MinHeight = 400;
 
+            // theming
             FluentHwInfo.Services.SettingsService.Instance.ThemeChanged += OnThemeChanged;
             ApplyTitleBarTheme(FluentHwInfo.Services.SettingsService.Instance.AppTheme);
             ApplyTrayIconTheme(FluentHwInfo.Services.SettingsService.Instance.AppTheme);
 
+            // event routing
+            this.Closed += (s, args) =>
+            {
+                FluentHwInfo.Services.SettingsService.Instance.ThemeChanged -= OnThemeChanged;
+                CurrentInstance = null;
+            };
             ((FrameworkElement)this.Content).Loaded += MainWindow_Loaded;
             this.AppWindow.Changed += AppWindow_Changed;
             this.AppWindow.Closing += AppWindow_Closing;
 
-            // system tray commands wiring
+            // system tray commands 
             RestoreAppCommand.ExecuteRequested += (s, e) => RestoreApp();
             ShowMainWindowCommand.ExecuteRequested += (s, e) =>
             {
@@ -102,12 +112,15 @@ namespace FluentHwInfo
             };
         }
 
+
+        // lifecycle and initialization methods
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // load the HardwareMonitorService singleton instance asynchronously
-            await StartHardwareServiceAsync();
-        }
+            if (_isHardwareServiceLoaded) return;
+            _isHardwareServiceLoaded = true;
 
+            await StartHardwareServiceAsync(); // load the HardwareMonitorService singleton instance asynchronously
+        }
         private async Task StartHardwareServiceAsync()
         {
             var monitor = FluentHwInfo.Services.HardwareMonitorService.Instance;
@@ -145,7 +158,6 @@ namespace FluentHwInfo
             await Task.Delay(500);
 
             // show the main grid
-            
             MainNavigationView.Visibility = Visibility.Visible;
 
             // manually close navigation pane
@@ -169,7 +181,6 @@ namespace FluentHwInfo
                 ApplyTrayIconTheme(newTheme);
             });
         }
-
         private void ApplyTitleBarTheme(string themeTag)
         {
             AppWindow.TitleBar.PreferredTheme = themeTag switch
@@ -179,9 +190,7 @@ namespace FluentHwInfo
                 _ => Microsoft.UI.Windowing.TitleBarTheme.UseDefaultAppMode
             };
         }
-
-        // theme switch does not work smh
-        private void ApplyTrayIconTheme(string themeTag)
+        private void ApplyTrayIconTheme(string themeTag) // theme switch does not work smh
         {
             var targetTheme = themeTag switch
             {
@@ -194,7 +203,7 @@ namespace FluentHwInfo
         }
 
 
-        // this method is called whenever an item in the navigation view is clicked
+        // navigation
         private void MainNavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             // checks if native settings item got clicked
@@ -204,9 +213,6 @@ namespace FluentHwInfo
                 return;
             }
 
-            // In a menu like this, you could theoretically click on simple separators or plain headings as well
-            // the event fires on everything and simply returns the object as a completely generic, unnamed "object"
-            // thats why we check if the clicked item is actually a NavigationViewItem
             if (args.SelectedItem is NavigationViewItem selectedItem)
             {
                 string pageTag = selectedItem.Tag.ToString(); // we pull the value of the tag of the selected item
@@ -225,23 +231,25 @@ namespace FluentHwInfo
         }
 
 
-        // system tray guard
+        // windows state and system tray logic
         private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
         {
-            // if MainWindow is minimized, check if we have to go to tray
+            // triggers every time the window minimizes or restores
             if (args.DidPresenterChange)
             {
                 CheckAndHideToTray();
             }
         }
-
         public void CheckAndHideToTray()
         {
-            // check if user toggled the sys tray functionality
+            // check if user toggled the system tray functionality
             if (!SettingsService.Instance.MinimizeToTray) return;
 
-            // check status of both windows
-            bool isMainReady = !this.AppWindow.IsVisible || (this.AppWindow.Presenter is OverlappedPresenter opMain && opMain.State == OverlappedPresenterState.Minimized);
+            // main window is ready for tray if its explicitly closed, already hidden, or currently minimized
+            bool isMainReady = _isDashboardClosed || !this.AppWindow.IsVisible ||
+                               (this.AppWindow.Presenter is OverlappedPresenter opMain && opMain.State == OverlappedPresenterState.Minimized);
+
+            // widget window is ready if it does not exist, is hidden, or is minimized
             bool isWidgetReady = true;
             if (Views.WidgetWindow.CurrentInstance != null)
             {
@@ -249,48 +257,70 @@ namespace FluentHwInfo
                 isWidgetReady = !Views.WidgetWindow.CurrentInstance.AppWindow.IsVisible || (opWidget != null && opWidget.State == OverlappedPresenterState.Minimized);
             }
 
-            // if both true; put it in system tray
+            // if both windows are out of the way, hide the app completely from the taskbar
             if (isMainReady && isWidgetReady)
             {
-                this.Hide(); // WinUIEx: deletes the window from the taskbar
-                if (Views.WidgetWindow.CurrentInstance != null)
+                // only call hide if it's not already locked down by the Win32 closing shield
+                if (!_isDashboardClosed)
                 {
-                    Views.WidgetWindow.CurrentInstance.Hide(); // WidgetWindow too
+                    this.Hide();
                 }
 
-                // for now the system tray icon will be always there
-                //TrayIcon.Visibility = Visibility.Visible;
+                if (Views.WidgetWindow.CurrentInstance != null)
+                {
+                    Views.WidgetWindow.CurrentInstance.Hide();
+                }
             }
         }
-
         private void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
         {
-            if (_isForceClosing) return; // if user explicitely clicks "exit app"; kill window
+            // if user clicks "exit app" in the tray menu, actually kill the process
+            if (_isForceClosing) return; 
 
             if (SettingsService.Instance.MinimizeToTray)
             {
-                args.Cancel = true; 
-                this.Hide();        
+                // cancel the actual shutdown
+                args.Cancel = true;
+                _isDashboardClosed = true;
+
+                // Win32 iron shield; makes the window invisible to the OS window manager
+                // WS_EX_TOOLWINDOW hides it from Alt+Tab
+                // WS_EX_NOACTIVATE prevents Windows from auto-focusing it
+                var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+                int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+                SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
+
+                this.Hide();
                 CheckAndHideToTray();
             }
         }
-
-        // system tray controller
-        private void RestoreApp()
+        public void OpenDashboard()
         {
-            // hide icon again
-            // for now the system tray icon will be always there
-            //TrayIcon.Visibility = Visibility.Collapsed;
+            // release the lock
+            _isDashboardClosed = false;
 
-            // restore MainWindow
-            this.Show(); // WinUIEx: back to task bar
+            // remove the Win32 shields to make it a normal app window again
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+            SetWindowLong(hwnd, GWL_EXSTYLE, exStyle & ~WS_EX_TOOLWINDOW & ~WS_EX_NOACTIVATE);
+
+            this.Show();
             if (this.AppWindow.Presenter is OverlappedPresenter opMain)
             {
                 opMain.Restore();
             }
             this.Activate();
+        }
+        private void RestoreApp()
+        {
+            // triggered by system tray double click
+            // only wake up the main window if the user didn't explicitly close it via "X"
+            if (!_isDashboardClosed)
+            {
+                OpenDashboard();
+            }
 
-            // restore WidgetWindow if it was open
+            // always wake up the widget window if it exists
             if (Views.WidgetWindow.CurrentInstance != null)
             {
                 Views.WidgetWindow.CurrentInstance.Show();

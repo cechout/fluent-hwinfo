@@ -96,7 +96,6 @@ namespace FluentHwInfo.Views
 
             _currentWidgetWindow.Activate();
         }
-
         // InfoBar animation
         private void AnimateInfoBar(double targetY, bool isHitTestVisible)
         {

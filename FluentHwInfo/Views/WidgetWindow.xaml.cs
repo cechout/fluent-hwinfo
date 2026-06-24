@@ -39,36 +39,35 @@ namespace FluentHwInfo.Views
         // constructor accepts the list of selected sensors from SensorsPage.xaml.cs
         public WidgetWindow(List<SensorRowViewModel> selectedSensors)
         {
-            // pass the selected sensors down to the ViewModel layer
-            ViewModel = new WidgetViewModel(selectedSensors);
-
+            // initialization
+            ViewModel = new WidgetViewModel(selectedSensors); // pass the selected sensors down to the ViewModel layer
             this.InitializeComponent();
             this.AppWindow.SetIcon("Assets\\Icon\\Icon.ico");
-            CurrentInstance = this; 
-            
+            CurrentInstance = this;
+
+            // window configuration
+            _appWindow = this.AppWindow;
+            ExtendsContentIntoTitleBar = true;
+            SetTitleBar(CustomTitleBar);
+            var presenter = OverlappedPresenter.Create();
+            presenter.IsAlwaysOnTop = true; // replaces the CompactOverlay behavior
+            presenter.IsMaximizable = false;
+            presenter.IsMinimizable = true;
+            presenter.IsResizable = true;
+            _appWindow.SetPresenter(presenter);
+
+            // window size and position
+            PositionWidgetTopRight(selectedSensors.Count); // we pass the number of sensors to the method for auto-sizing
+
+            // theming
             SetBackdrop(SettingsService.Instance.BackdropType);
             ApplyTheme(SettingsService.Instance.AppTheme);
 
-            // listen to the global settings
+            // event routing
             SettingsService.Instance.ThemeChanged += OnThemeChanged;
             SettingsService.Instance.BackdropTypeChanged += OnBackdropTypeChanged;
             SettingsService.Instance.OpacityChanged += OnOpacityChanged;
             SettingsService.Instance.TintColorChanged += OnTintColorChanged;
-
-            // custom window settings
-            _appWindow = this.AppWindow;
-            ExtendsContentIntoTitleBar = true;
-            SetTitleBar(CustomTitleBar);
-
-            var presenter = OverlappedPresenter.Create();
-            presenter.IsAlwaysOnTop = true; // replaces the CompactOverlay behavior
-            presenter.IsMaximizable = false; 
-            presenter.IsMinimizable = true;  
-            presenter.IsResizable = true; 
-            _appWindow.SetPresenter(presenter);
-
-            // we pass the number of sensors to the method for auto-sizing
-            PositionWidgetTopRight(selectedSensors.Count);
 
             this.Closed += WidgetWindow_Closed;
             _appWindow.Changed += AppWindow_Changed;
@@ -144,23 +143,20 @@ namespace FluentHwInfo.Views
         // user iteraction
         private void BackToDashboard_Click(object sender, RoutedEventArgs e)
         {
-            // check if the main window is still open; 
+            // check if the main window instance exists in memory
             if (MainWindow.CurrentInstance != null)
             {
-                // if yes, just bring it to the front
-                MainWindow.CurrentInstance.Show();
-                MainWindow.CurrentInstance.Activate();
+                MainWindow.CurrentInstance.OpenDashboard();
             }
             else
             {
-                // if not, we just create a new one (the app is still running because the WidgetWindow is open, so
-                // we dont need to worry about the shutdown mode)
+                // if the instance was completely destroyed, create a new one
+                // the app process is safely kept alive by the open widget window
                 var newMainWindow = new MainWindow();
                 newMainWindow.Activate();
             }
 
-            // close widget window (do we want this?)
-            // this.Close();
+            // this.Close(); // optional: close the widget when returning to dashboard
         }
 
 
@@ -196,9 +192,10 @@ namespace FluentHwInfo.Views
         }
         private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
         {
-            // if widget window is closed, main window also has to check
+            // triggers when the widget window minimizes or restores
             if (args.DidPresenterChange && MainWindow.CurrentInstance != null)
             {
+                // notify the main window to re-evaluate the system tray state
                 MainWindow.CurrentInstance.CheckAndHideToTray();
             }
         }
@@ -227,7 +224,6 @@ namespace FluentHwInfo.Views
                 };
             }
         }
-        
         private void UpdateAcrylicProperties()
         {
             if (_acrylicController != null)
