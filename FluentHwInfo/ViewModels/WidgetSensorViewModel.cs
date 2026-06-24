@@ -109,7 +109,7 @@ namespace FluentHwInfo.ViewModels
 
             // this raw data list will be plotted by LiveCharts
             // we use LINQ Enumerable.Repeat to fill the entire list with "0.0" values at startup
-            SensorData = new ObservableCollection<double?>(Enumerable.Repeat<double?>(0.0, MaxDataPoints));
+            SensorData = new ObservableCollection<double?>(Enumerable.Repeat<double?>(0.0, SettingsService.Instance.GraphDataPoints));
 
             // custom gradient fill
             var gradientFill = new LinearGradientPaint(
@@ -139,7 +139,9 @@ namespace FluentHwInfo.ViewModels
 
             // we call this method to set the initial graph color based on the current settings
             UpdateGraphColor(SettingsService.Instance.UseGraphAccentColor, SettingsService.Instance.GraphCustomColor);
+
             SettingsService.Instance.GraphColorChanged += OnGraphColorChanged;
+            SettingsService.Instance.GraphDataPointsChanged += OnGraphDataPointsChanged;
         }
 
 
@@ -147,6 +149,7 @@ namespace FluentHwInfo.ViewModels
         public void Cleanup()
         {
             SettingsService.Instance.GraphColorChanged -= OnGraphColorChanged;
+            SettingsService.Instance.GraphDataPointsChanged -= OnGraphDataPointsChanged;
         }
 
 
@@ -229,8 +232,31 @@ namespace FluentHwInfo.ViewModels
         {
             UpdateGraphColor(useAccent, customColor);
         }
+        private void OnGraphDataPointsChanged(int newCount)
+        {
+            int currentCount = SensorData.Count;
 
-        
+            if (newCount > currentCount)
+            {
+                // the list got bigger -> add blank points (0.0) to the left (beginning of the list)
+                int pointsToAdd = newCount - currentCount;
+                for (int i = 0; i < pointsToAdd; i++)
+                {
+                    SensorData.Insert(0, 0.0);
+                }
+            }
+            else if (newCount < currentCount)
+            {
+                // the list got smaller -> remove the oldest points on the left
+                int pointsToRemove = currentCount - newCount;
+                for (int i = 0; i < pointsToRemove; i++)
+                {
+                    SensorData.RemoveAt(0);
+                }
+            }
+        }
+
+
         // user interaction
         public void ToggleControlPanel()
         {

@@ -16,6 +16,7 @@ namespace FluentHwInfo.Services
         public event Action<float, float> OpacityChanged;
         public event Action<bool, Color> TintColorChanged;
         public event Action<bool, Windows.UI.Color> GraphColorChanged;
+        public event Action<int> GraphDataPointsChanged;
 
         // fields
         private string _appTheme = "Default";
@@ -126,6 +127,20 @@ namespace FluentHwInfo.Services
                 {
                     _graphCustomColor = value;
                     GraphColorChanged?.Invoke(_useGraphAccentColor, _graphCustomColor);
+                }
+            }
+        }
+
+        private int _graphDataPoints = 110;
+        public int GraphDataPoints
+        {
+            get => _graphDataPoints;
+            set
+            {
+                if (_graphDataPoints != value)
+                {
+                    _graphDataPoints = value;
+                    GraphDataPointsChanged?.Invoke(_graphDataPoints);
                 }
             }
         }

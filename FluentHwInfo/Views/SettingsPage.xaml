@@ -146,6 +146,27 @@
                 </controls:SettingsExpander.Items>
             </controls:SettingsExpander>
 
+            <!--  number of graph points  -->
+            <controls:SettingsCard
+                Description="How many data points should be displayed in the widget graph"
+                Header="Number of Graph Data Points"
+                HeaderIcon="{ui:FontIcon Glyph=&#xE9D2;}">
+                <ComboBox
+                    x:Name="GraphDataPointsComboBox"
+                    Width="150"
+                    SelectionChanged="GraphDataPointsComboBox_SelectionChanged">
+                    <ComboBoxItem Content="80 Points" Tag="80" />
+                    <ComboBoxItem Content="90 Points" Tag="90" />
+                    <ComboBoxItem Content="100 Points" Tag="100" />
+                    <ComboBoxItem Content="110 Points" Tag="110" />
+                    <ComboBoxItem Content="120 Points" Tag="120" />
+                    <ComboBoxItem Content="130 Points" Tag="130" />
+                    <ComboBoxItem Content="140 Points" Tag="140" />
+                    <ComboBoxItem Content="150 Points" Tag="150" />
+                    <ComboBoxItem Content="160 Points" Tag="160" />
+                </ComboBox>
+            </controls:SettingsCard>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

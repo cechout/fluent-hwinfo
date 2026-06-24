@@ -17,6 +17,7 @@ namespace FluentHwInfo.Views
             RestoreThemeSelection();
             RestoreIntervalSelection();
             RestoreWidgetSettings();
+            RestoreGraphDataPointsSelection();
 
             // event listeners
             WidgetBackgroundColorPicker.RegisterPropertyChangedCallback(
@@ -184,6 +185,34 @@ namespace FluentHwInfo.Views
 
             GraphColorSourceComboBox.SelectedIndex = SettingsService.Instance.UseGraphAccentColor ? 0 : 1;
             GraphColorPicker.SelectedColor = SettingsService.Instance.GraphCustomColor;
+        }
+
+        // graph data points combo box
+        private void GraphDataPointsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_isLoading) return;
+
+            if (sender is ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                if (selectedItem.Tag != null && int.TryParse(selectedItem.Tag.ToString(), out int newDataPoints))
+                {
+                    SettingsService.Instance.GraphDataPoints = newDataPoints;
+                }
+            }
+        }
+
+        private void RestoreGraphDataPointsSelection()
+        {
+            int currentDataPoints = SettingsService.Instance.GraphDataPoints;
+
+            foreach (ComboBoxItem item in GraphDataPointsComboBox.Items)
+            {
+                if (item.Tag?.ToString() == currentDataPoints.ToString())
+                {
+                    GraphDataPointsComboBox.SelectedItem = item;
+                    break;
+                }
+            }
         }
     }
 }
