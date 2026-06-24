@@ -90,35 +90,36 @@ namespace FluentHwInfo
             var monitor = FluentHwInfo.Services.HardwareMonitorService.Instance;
 
             // scan motherboard
-            LoadingStatusText.Text = "Initializing Motherboard...";
+            LoadingStatusText.Text = "Initializing motherboard...";
             LoadingProgressBar.Value = 25;
             await monitor.InitMotherboardAsync();
             // await Task.Delay(4000000);
 
             // scan CPU
-            LoadingStatusText.Text = "Scanning CPU sensors...";
+            LoadingStatusText.Text = "Scanning CPU...";
             LoadingProgressBar.Value = 50;
             await monitor.InitCpuAsync();
-            // await Task.Delay(400);
 
             // scan GPU
-            LoadingStatusText.Text = "Scanning GPU parameters...";
+            LoadingStatusText.Text = "Scanning GPU...";
             LoadingProgressBar.Value = 75;
             await monitor.InitGpuAsync();
-            // await Task.Delay(400);
 
             // scan memory and storage
             LoadingStatusText.Text = "Checking memory and storage...";
             LoadingProgressBar.Value = 100;
             await monitor.InitMemoryAndStorageAsync();
-            // await Task.Delay(400);
 
             // no we start the HardwareMonitorService loop manually
             monitor.StartMonitoring();
-            // await Task.Delay(400);
 
-            LoadingStatusText.Text = "Ready!";
-            await Task.Delay(400);
+            // we explicitly wait until the ViewModel has received and processed the very first data payload
+            LoadingStatusText.Text = "Waiting for data...";
+            await FluentHwInfo.ViewModels.SensorsViewModel.Instance.WaitForInitialLoadAsync();
+
+            // now we are finished loading
+            LoadingStatusText.Text = "Ready";
+            await Task.Delay(500);
 
             // show the main grid
             SplashOverlay.Visibility = Visibility.Collapsed;

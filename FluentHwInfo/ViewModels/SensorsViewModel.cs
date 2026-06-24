@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using FluentHwInfo.Services;
+using Microsoft.UI.Dispatching;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using FluentHwInfo.Services;
-using Microsoft.UI.Dispatching;
+using System.Threading.Tasks;
 
 namespace FluentHwInfo.ViewModels
 {
@@ -31,6 +32,8 @@ namespace FluentHwInfo.ViewModels
         // As a result, the UI thread ultimately updates the SensorList with the recieved package from the subscribed
         // HardwareMonitorService event, when it has time to do so
         private DispatcherQueue _dispatcherQueue;
+        private TaskCompletionSource<bool> _initialLoadTcs = new TaskCompletionSource<bool>();
+        public Task WaitForInitialLoadAsync() => _initialLoadTcs.Task; // MainWindow waits on this
         private static SensorsViewModel _instance; // SensorsViewModel is a singleton
         public static SensorsViewModel Instance
         {
@@ -54,8 +57,6 @@ namespace FluentHwInfo.ViewModels
             // HardwareMonitorService
             _service = HardwareMonitorService.Instance; // get HardwareMonitorService instance
             _service.HardwareDataUpdated += OnHardwareDataUpdated; // subscribe to the master event
-
-            _service.StartMonitoring();
         }
 
 
@@ -97,6 +98,12 @@ namespace FluentHwInfo.ViewModels
                         newRow.UpdateValue(data.Value);
                         existingGroup.Sensors.Add(newRow);
                     }
+                }
+
+                // signalize that the first data batch has been successfully processed
+                if (!_initialLoadTcs.Task.IsCompleted && HardwareGroups.Count > 0)
+                {
+                    _initialLoadTcs.SetResult(true);
                 }
             });
         }
