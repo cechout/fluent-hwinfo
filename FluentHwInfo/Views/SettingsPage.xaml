@@ -175,6 +175,93 @@
                 </ComboBox>
             </controls:SettingsCard>
 
+
+            <!--  about section  -->
+            <TextBlock
+                Margin="1,20,0,6"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="About &amp; Open Source" />
+
+            <controls:SettingsExpander
+                Description="© 2026 Daniel Čech. All rights reserved."
+                Header="Fluent HwInfo"
+                HeaderIcon="{ui:FontIcon Glyph=&#xE946;}">
+
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    IsTextSelectionEnabled="True"
+                    Text="Version 0.2.1" />
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Header="Developer Profile">
+                        <HyperlinkButton Content="Github" NavigateUri="https://github.com/cechout" />
+                    </controls:SettingsCard>
+                    <controls:SettingsCard Header="Project Repository">
+                        <HyperlinkButton Content="Github" NavigateUri="https://github.com/cechout/fluent-hwinfo" />
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
+
+            <controls:SettingsExpander
+                Description="This application is built using the following open source projects."
+                Header="Third-Party Libraries"
+                HeaderIcon="{ui:FontIcon Glyph=&#xE8F1;}">
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Header="Windows App SDK">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/microsoft/WindowsAppSDK" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="Windows Community Toolkit">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/CommunityToolkit/WindowsCommunityToolkit" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="WinUIEx">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/dotMorten/WinUIEx" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="LiveCharts2">
+                        <HyperlinkButton Content="Website" NavigateUri="https://livecharts.dev/" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="LibreHardwareMonitor">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/LibreHardwareMonitor/LibreHardwareMonitor" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="H.NotifyIcon">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/HavenDV/H.NotifyIcon" />
+                    </controls:SettingsCard>
+
+                </controls:SettingsExpander.Items>
+
+                <!--<controls:SettingsExpander.Items>
+                    <controls:SettingsCard Description="Microsoft UI framework and tools" Header="Windows App SDK">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/microsoft/WindowsAppSDK" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="UI Controls, Extensions &amp; Settings UI" Header="Windows Community Toolkit">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/CommunityToolkit/WindowsCommunityToolkit" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="WinUI 3 extension library for window management" Header="WinUIEx">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/dotMorten/WinUIEx" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Interactive charts and data visualization" Header="LiveCharts2">
+                        <HyperlinkButton Content="Website" NavigateUri="https://livecharts.dev/" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Open source hardware monitoring API" Header="LibreHardwareMonitor">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/LibreHardwareMonitor/LibreHardwareMonitor" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="System Tray integration for WinUI" Header="H.NotifyIcon">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/HavenDV/H.NotifyIcon" />
+                    </controls:SettingsCard>
+
+                </controls:SettingsExpander.Items>-->
+            </controls:SettingsExpander>
+
         </StackPanel>
     </ScrollViewer>
 </Page>

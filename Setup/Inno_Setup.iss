@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "Fluent HwInfo"
-#define MyAppVersion "0.2.0"
+#define MyAppVersion "0.2.1"
 #define MyAppPublisher "Daniel Čech"
 #define MyAppExeName "FluentHwInfo.exe"
 
