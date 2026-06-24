@@ -1,9 +1,10 @@
-<img width="2560" height="810" alt="frame2" src="https://github.com/user-attachments/assets/4609864d-065d-4cfe-bc28-a97d35664f65" />
+<img width="2560" height="810" alt="frame4" src="https://github.com/user-attachments/assets/e47af910-8a43-4fec-908e-402dd6303dcd" />
+
 
 ###
 Reading hardware sensors often results in cluttered and old-looking interfaces. This project aims to change that. 
 
-FluentHwInfo is a hardware monitoring application built with **WinUI 3**. The goal is to display deep system diagnostics (like CPU, GPU, RAM, and thermals) in a clean, native Windows 11 user interface.
+Fluent HwInfo is a hardware monitoring application built with **WinUI 3**. The goal is to display deep system diagnostics (like CPU, GPU, RAM, and thermals) in a clean, native Windows 11 user interface.
 
 ## ⚙️ Under the Hood
 The app is built with a straightforward architecture and native Windows 11 integration in mind.

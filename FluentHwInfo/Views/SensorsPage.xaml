@@ -51,7 +51,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Bottom"
                         Click="ResetMinMax_Click"
-                        Content="Reset Min/Max"
+                        Content="Reset Values"
                         Style="{ThemeResource SubtleButtonStyle}">
                         <Button.ContentTemplate>
                             <DataTemplate>
