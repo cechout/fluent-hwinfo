@@ -93,7 +93,7 @@ namespace FluentHwInfo
             LoadingStatusText.Text = "Initializing Motherboard...";
             LoadingProgressBar.Value = 25;
             await monitor.InitMotherboardAsync();
-             await Task.Delay(4000000);
+            // await Task.Delay(4000000);
 
             // scan CPU
             LoadingStatusText.Text = "Scanning CPU sensors...";

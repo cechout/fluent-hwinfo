@@ -28,7 +28,7 @@
             <Border
                 Width="34"
                 Height="3"
-                Margin="0,6,0,0"
+                Margin="0,8,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Background="{ThemeResource TextFillColorTertiaryBrush}"

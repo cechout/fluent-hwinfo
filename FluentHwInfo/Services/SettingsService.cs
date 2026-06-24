@@ -88,7 +88,7 @@ namespace FluentHwInfo.Services
             }
         }
 
-        private Color _customTintColor = Color.FromArgb(255, 128, 128, 128);
+        private Color _customTintColor = Color.FromArgb(255, 25, 25, 25);
         public Color CustomTintColor
         {
             get => _customTintColor;
