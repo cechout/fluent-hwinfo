@@ -12,16 +12,153 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Row="0" Padding="16,0,16,0">
 
-            <ItemsControl Margin="0,0,0,16" ItemsSource="{x:Bind ViewModel.HardwareGroups, Mode=OneWay}">
+        <!--  control buttons  -->
+        <Border
+            Grid.Row="0"
+            Padding="12,8,16,8"
+            Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}"
+            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    Grid.Column="0"
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource BodyStrongTextBlockStyle}"
+                    Text="Sensor List" />
+
+                <StackPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="0">
+
+                    <Button
+                        Height="36"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom"
+                        Content="Reset Min/Max"
+                        Style="{ThemeResource SubtleButtonStyle}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontSize="15" Glyph="&#xE72C;" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{ThemeResource CaptionTextBlockStyle}"
+                                        Text="{Binding}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+
+                    <Button
+                        Height="36"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Click="PinToWidget_Click"
+                        Content="Pin to Widget"
+                        Style="{ThemeResource SubtleButtonStyle}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontSize="16" Glyph="&#xE93A;" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{ThemeResource CaptionTextBlockStyle}"
+                                        Text="{Binding}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!--  items header labels at top of page  -->
+        <Border Grid.Row="1" Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}">
+            <Grid HorizontalAlignment="Stretch">
+
+                <Grid Margin="32,12,32,12" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" MinWidth="140" />
+                        <ColumnDefinition Width="*" MinWidth="65" />
+                        <ColumnDefinition Width="*" MinWidth="65" />
+                        <ColumnDefinition Width="*" MinWidth="65" />
+                        <ColumnDefinition Width="*" MinWidth="65" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="36,0,0,0"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Sensor" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Current" />
+                    <TextBlock
+                        Grid.Column="2"
+                        HorizontalAlignment="Right"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Min" />
+                    <TextBlock
+                        Grid.Column="3"
+                        HorizontalAlignment="Right"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Max" />
+                    <TextBlock
+                        Grid.Column="4"
+                        HorizontalAlignment="Right"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Avg" />
+                </Grid>
+
+                <Border
+                    Height="1"
+                    Margin="0,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+
+            </Grid>
+        </Border>
+
+
+        <!--  scrollviewer with all the cards of different hardware groups  -->
+        <ScrollViewer
+            x:Name="MainScrollViewer"
+            Grid.Row="2"
+            Padding="16,0,16,0">
+
+            <ItemsControl
+                x:Name="HardwareItemsControl"
+                Margin="0,0,0,16"
+                ItemsSource="{x:Bind ViewModel.HardwareGroups, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="local1:HardwareGroupViewModel">
 
+                        <!--  settings expander (containing all the sensors for one hardware group)  -->
                         <controls:SettingsExpander
                             Margin="0,16,0,0"
                             Header="{x:Bind HardwareName, Mode=OneWay}"
@@ -29,8 +166,8 @@
                             ItemsSource="{x:Bind Sensors, Mode=OneWay}">
 
                             <!--<ComboBox MinWidth="150" SelectedIndex="0">
-                                <ComboBoxItem>All Sensors</ComboBoxItem>
-                                <ComboBoxItem>Custom Selection</ComboBoxItem>
+                            <ComboBoxItem>All Sensors</ComboBoxItem>
+                            <ComboBoxItem>Custom Selection</ComboBoxItem>
                             </ComboBox>-->
 
                             <!--  items header  -->
@@ -110,17 +247,21 @@
                                 </DataTemplate>
                             </controls:SettingsExpander.ItemTemplate>
                         </controls:SettingsExpander>
+
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-
-
         </ScrollViewer>
 
-        <Border
-            Grid.Row="1"
+
+        <!--  bottom page border with control buttons  -->
+        <!--  ControlFillColorTertiaryBrush  -->
+        <!--  SolidBackgroundFillColorTertiaryBrush  -->
+        <!--  SolidBackgroundFillColorQuarternaryBrush  -->
+        <!--<Border
+            Grid.Row="3"
             Padding="12,12,16,12"
-            Background="{ThemeResource ControlFillColorTertiaryBrush}"
+            Background="{ThemeResource SolidBackgroundFillColorQuarternaryBrush}"
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             BorderThickness="0,1,0,0">
 
@@ -129,13 +270,17 @@
                 Orientation="Horizontal"
                 Spacing="8">
 
-                <!--  reset min/max button  -->
+        -->
+        <!--  reset min/max button  -->
+        <!--
                 <Button
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
                     Content="Reset Min/Max" />
 
-                <!--  pin to widget button  -->
+        -->
+        <!--  pin to widget button  -->
+        <!--
                 <Button
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
@@ -152,6 +297,6 @@
                     </Button.ContentTemplate>
                 </Button>
             </StackPanel>
-        </Border>
+        </Border>-->
     </Grid>
 </Page>
