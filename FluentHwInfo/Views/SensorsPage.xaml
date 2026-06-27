@@ -20,10 +20,11 @@
 
 
         <!--  control buttons  -->
+        <!--  (border has background: {ThemeResource SolidBackgroundFillColorTertiaryBrush})  -->
         <Border
             Grid.Row="0"
             Padding="12,8,16,8"
-            Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}"
+            Background="Transparent"
             BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
             BorderThickness="0,0,0,1">
 
@@ -109,8 +110,9 @@
             </Grid>
         </Border>
 
-        <!--  items header labels at top of page  -->
-        <Border Grid.Row="1" Background="{ThemeResource SolidBackgroundFillColorTertiaryBrush}">
+        <!--  items header labels  -->
+        <!--  (border has background: {ThemeResource SolidBackgroundFillColorTertiaryBrush})  -->
+        <Border Grid.Row="1" Background="Transparent">
             <Grid HorizontalAlignment="Stretch">
 
                 <Grid Margin="32,12,32,12" HorizontalAlignment="Stretch">
