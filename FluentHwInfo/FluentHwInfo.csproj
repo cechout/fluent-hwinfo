@@ -34,6 +34,7 @@
     <None Remove="Assets\Icon\Icon.ico" />
     <None Remove="Assets\Icon\Icon.png" />
     <None Remove="Assets\SplashScreen.ico" />
+    <None Remove="Views\Graph.xaml" />
     <None Remove="Views\SensorCardControl.xaml" />
     <None Remove="Views\SensorsPage.xaml" />
     <None Remove="Views\SettingsPage.xaml" />
@@ -83,6 +84,11 @@
     <Content Update="Assets\Icon\Icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Graph.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\SensorCardControl.xaml">

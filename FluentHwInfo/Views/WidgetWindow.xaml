@@ -190,29 +190,7 @@
                                     </Grid>
 
                                     <!--  LiveChart graph  -->
-                                    <Border
-                                        Grid.Column="1"
-                                        Padding="0,0,0,0"
-                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                        BorderBrush="{ThemeResource ControlStrokeColorSecondaryBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="4">
-
-                                        <Grid CornerRadius="3.3">
-                                            <lvc:CartesianChart
-                                                Height="80"
-                                                Margin="-3,0,-3,-2"
-                                                HorizontalAlignment="Stretch"
-                                                AnimationsSpeed="00:00:00"
-                                                Background="Transparent"
-                                                CornerRadius="20"
-                                                DrawMargin="{x:Bind ChartMargin, Mode=OneWay}"
-                                                Series="{x:Bind Series, Mode=OneWay}"
-                                                TooltipPosition="Auto"
-                                                XAxes="{x:Bind XAxes, Mode=OneWay}"
-                                                YAxes="{x:Bind YAxes, Mode=OneWay}" />
-                                        </Grid>
-                                    </Border>
+                                    <local:Graph Grid.Column="1" />
                                 </Grid>
 
                                 <!--  control buttons on position 2 (probably not gonne need them)  -->
