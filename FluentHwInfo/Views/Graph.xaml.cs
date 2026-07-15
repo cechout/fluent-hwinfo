@@ -31,6 +31,7 @@ namespace FluentHwInfo.Views
         private readonly Axis _yAxis;
         private readonly StepLineSeries<double?> _lineSeries;
         private bool _isPointerOverChart = false;
+        private Windows.Foundation.Point _lastPointerPosition;
 
 
         // constructor
@@ -129,6 +130,11 @@ namespace FluentHwInfo.Views
         {
             ApplyStroke();
             RebuildSections();
+
+            if (_isPointerOverChart)
+            {
+                UpdateHoverAtPointer();
+            }
         }
 
 
@@ -489,16 +495,23 @@ namespace FluentHwInfo.Views
         // updates hover circle + label position and value whenever the pointer moves over the chart
         private void OnChartPointerMoved(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            _lastPointerPosition = e.GetCurrentPoint(Chart).Position;
+            UpdateHoverAtPointer();
+        }
+
+        // re-usable: called on pointer move, and also on every new data point while the
+        // pointer is still sitting still over the chart, so the hover value keeps tracking
+        private void UpdateHoverAtPointer()
+        {
             if (Values is null || Values.Count == 0)
             {
                 HideHoverElements();
                 return;
             }
 
-            var position = e.GetCurrentPoint(Chart).Position;
+            var position = _lastPointerPosition;
             var dataPoint = Chart.ScalePixelsToData(new LvcPointD(position.X, position.Y));
 
-            // step-line semantics: the visible value at any x is the last actual data point at or before it
             int index = (int)System.Math.Floor(dataPoint.X);
             if (index < 0 || index >= Values.Count)
             {
@@ -519,8 +532,6 @@ namespace FluentHwInfo.Views
                 ShowHoverElements();
             }
 
-            // convert the stepped value back to a pixel Y; X stays the raw pointer X (no snap),
-            // so the circle glides smoothly while still landing on the correct step height
             var valuePixels = Chart.ScaleDataToPixels(new LvcPointD(dataPoint.X, value.Value));
 
             Canvas.SetLeft(HoverCircle, position.X - HoverCircle.Width / 2);
