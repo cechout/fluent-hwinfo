@@ -1,22 +1,25 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using FluentHwInfo.Services;
+using FluentHwInfo.Views;
 using LiveChartsCore;
 using LiveChartsCore.Drawing;
 using LiveChartsCore.Kernel.Sketches;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
-using SkiaSharp;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using SkiaSharp;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using FluentHwInfo.Services;
+using System.Runtime.CompilerServices;
 
 namespace FluentHwInfo.ViewModels
 {
     public class WidgetSensorViewModel : INotifyPropertyChanged
     {
         // general fields
-        private const int MaxDataPoints = 100;
+        public ObservableCollection<double?> SensorData { get; private set; }
         public string SensorId { get; } // this is the unique sensor identifier (e.g., "/intelcpu/0/load/1")
         private string _sensorName = "not provided";
         public string SensorName
@@ -30,9 +33,14 @@ namespace FluentHwInfo.ViewModels
             get => _currentValueText;
             set { _currentValueText = value; OnPropertyChanged(); }
         }
+        private Windows.UI.Color _graphColor;
+        public Windows.UI.Color GraphColor
+        {
+            get => _graphColor;
+            private set { _graphColor = value; OnPropertyChanged(); }
+        }
 
         // y-axis fields
-        private readonly Axis _yAxis;
         private bool _isAutoScaled = true;
         public bool IsAutoScaled
         {
@@ -43,7 +51,6 @@ namespace FluentHwInfo.ViewModels
                 {
                     _isAutoScaled = value;
                     OnPropertyChanged();
-                    UpdateYAxisLimit();
                     UpdateYMaxDisplay();
                 }
             }
@@ -58,7 +65,6 @@ namespace FluentHwInfo.ViewModels
                 {
                     _manualYMax = value;
                     OnPropertyChanged();
-                    UpdateYAxisLimit();
                     UpdateYMaxDisplay();
                 }
             }
@@ -77,7 +83,65 @@ namespace FluentHwInfo.ViewModels
             }
         }
 
-        // visibility control for the left button panel field
+        // threshold configuration 
+        private bool _isThresholdEnabled = false;
+        public bool IsThresholdEnabled
+        {
+            get => _isThresholdEnabled;
+            set
+            {
+                if (_isThresholdEnabled != value)
+                {
+                    _isThresholdEnabled = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ThresholdValue));
+                }
+            }
+        }
+        private double _manualThreshold = 50;
+        public double ManualThreshold
+        {
+            get => _manualThreshold;
+            set
+            {
+                if (_manualThreshold != value)
+                {
+                    _manualThreshold = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ThresholdValue));
+                }
+            }
+        }
+        public double? ThresholdValue => IsThresholdEnabled ? _manualThreshold : (double?)null;
+        private ThresholdDirection _thresholdDirection = ThresholdDirection.Above;
+        public ThresholdDirection ThresholdDirection
+        {
+            get => _thresholdDirection;
+            set { _thresholdDirection = value; OnPropertyChanged(); }
+        }
+        public SolidColorBrush ThresholdColorBrush
+        {
+            get
+            {
+                var c = ThresholdColor;
+                const byte swatchAlpha = 200; // 255 = fully opaque
+                return new SolidColorBrush(Windows.UI.Color.FromArgb(swatchAlpha, c.R, c.G, c.B));
+            }
+        }
+        private Windows.UI.Color _thresholdColor = Windows.UI.Color.FromArgb(255, 220, 50, 50);
+        public Windows.UI.Color ThresholdColor
+        {
+            get => _thresholdColor;
+            set
+            {
+                if (_thresholdColor == value) return;
+                _thresholdColor = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ThresholdColorBrush));
+            }
+        }
+
+        // single visibility state for all control panels; toggled together, shown together
         private Visibility _controlPanelVisibility = Visibility.Collapsed;
         public Visibility ControlPanelVisibility
         {
@@ -92,13 +156,6 @@ namespace FluentHwInfo.ViewModels
             }
         }
 
-        // LiveCharts fields
-        public ObservableCollection<double?> SensorData { get; set; }
-        public ISeries[] Series { get; set; }
-        public ICartesianAxis[] XAxes { get; set; } = { new Axis { IsVisible = false } };
-        public ICartesianAxis[] YAxes { get; set; } = { new Axis { IsVisible = false } };
-        public LiveChartsCore.Measure.Margin ChartMargin { get; set; } = new LiveChartsCore.Measure.Margin(0);
-
 
         // constructor
         public WidgetSensorViewModel(string sensorId, string sensorName)
@@ -111,35 +168,7 @@ namespace FluentHwInfo.ViewModels
             // we use LINQ Enumerable.Repeat to fill the entire list with "0.0" values at startup
             SensorData = new ObservableCollection<double?>(Enumerable.Repeat<double?>(0.0, SettingsService.Instance.GraphDataPoints));
 
-            // custom gradient fill
-            var gradientFill = new LinearGradientPaint(
-                new[] { SKColors.DodgerBlue.WithAlpha(70), SKColors.DodgerBlue.WithAlpha(70) },
-                new SKPoint(0.5f, 0),
-                new SKPoint(0.5f, 1)
-            );
-
-            // the LiveCharts ISeries definition
-            var lineSeries = new StepLineSeries<double?>
-            {
-                Values = SensorData,
-                GeometrySize = 0, // 0: no graph points, >=1: size of graph points
-                //LineSmoothness = 0.6,
-                DataPadding = new LvcPoint(0, 0) // graph padding
-            };
-            Series = new ISeries[] { lineSeries };
-
-            // the LiveCharts y-axis definition
-            _yAxis = new Axis
-            {
-                IsVisible = false,
-                MinLimit = 0,     // floor always at 0
-                MaxLimit = null   // null means LiveCharts does Auto-Scaling (our initial value)
-            };
-            YAxes = new ICartesianAxis[] { _yAxis };
-
-            // we call this method to set the initial graph color based on the current settings
-            UpdateGraphColor(SettingsService.Instance.UseGraphAccentColor, SettingsService.Instance.GraphCustomColor);
-
+            GraphColor = ResolveGraphColor( SettingsService.Instance.UseGraphAccentColor, SettingsService.Instance.GraphCustomColor);
             SettingsService.Instance.GraphColorChanged += OnGraphColorChanged;
             SettingsService.Instance.GraphDataPointsChanged += OnGraphDataPointsChanged;
         }
@@ -168,7 +197,6 @@ namespace FluentHwInfo.ViewModels
         }
 
 
-        // methods to calculate or set stuff for ui
         // calculates, what has to be displayed in the UI as the current max value
         private void UpdateYMaxDisplay()
         {
@@ -184,53 +212,23 @@ namespace FluentHwInfo.ViewModels
                 ActualYMaxText = ManualYMax.ToString("0");
             }
         }
-        private void UpdateYAxisLimit()
-        {
-            // if auto is on, we pass null to LiveCharts
-            // if auto is off, we pass the manual value
-            _yAxis.MaxLimit = IsAutoScaled ? null : ManualYMax;
-        }
-        private void UpdateGraphColor(bool useAccent, Windows.UI.Color customColor)
-        {
-            Windows.UI.Color targetWinColor;
 
+
+        // resolves the current accent-color setting to a concrete Color value
+        private static Windows.UI.Color ResolveGraphColor(bool useAccent, Windows.UI.Color customColor)
+        {
             if (useAccent)
             {
-                // get windows accent color
-                targetWinColor = (Windows.UI.Color)Application.Current.Resources["SystemAccentColor"];
+                return (Windows.UI.Color)Application.Current.Resources["SystemAccentColor"];
             }
-            else
-            {
-                targetWinColor = customColor;
-            }
-
-            // transform in SKColor for SkiaSharp
-            SKColor baseColor = new SKColor(targetWinColor.R, targetWinColor.G, targetWinColor.B);
-
-            // get the line series
-            if (Series[0] is StepLineSeries<double?> lineSeries)
-            {
-                // 15 % alpha for the background (255 * 0.15 = ~38)
-                var gradientFill = new LinearGradientPaint(
-                    new[] { baseColor.WithAlpha(38), baseColor.WithAlpha(38) },
-                    new SKPoint(0.5f, 0),
-                    new SKPoint(0.5f, 1)
-                );
-
-                // 80 % alpha for the line (255 * 0.80 = ~204)
-                var stroke = new SolidColorPaint(baseColor.WithAlpha(204)) { StrokeThickness = 1 };
-
-                // assign
-                lineSeries.Fill = gradientFill;
-                lineSeries.Stroke = stroke;
-            }
+            return customColor;
         }
 
 
         // service listener
         private void OnGraphColorChanged(bool useAccent, Windows.UI.Color customColor)
         {
-            UpdateGraphColor(useAccent, customColor);
+            GraphColor = ResolveGraphColor(useAccent, customColor);
         }
         private void OnGraphDataPointsChanged(int newCount)
         {
@@ -258,12 +256,14 @@ namespace FluentHwInfo.ViewModels
 
 
         // user interaction
+        // pane toggle button
         public void ToggleControlPanel()
         {
             ControlPanelVisibility = ControlPanelVisibility == Visibility.Visible
                 ? Visibility.Collapsed
                 : Visibility.Visible;
         }
+        // control buttons
         public void IncreaseYMax()
         {
             IsAutoScaled = false; // automatically turns off the auto button in the ui
@@ -277,6 +277,22 @@ namespace FluentHwInfo.ViewModels
             if (ManualYMax > 10)
             {
                 ManualYMax -= 10;
+            }
+        }
+        // threshold buttons
+        public void IncreaseThreshold()
+        {
+            IsThresholdEnabled = true;  // auto-enable when the user adjusts the value
+            ManualThreshold += 5;
+        }
+        public void DecreaseThreshold()
+        {
+            IsThresholdEnabled = true;  // auto-enable when the user adjusts the value
+
+            // preventing the threshold from falling to 0 or into the negative range
+            if (ManualThreshold > 5)
+            {
+                ManualThreshold -= 5;
             }
         }
 
