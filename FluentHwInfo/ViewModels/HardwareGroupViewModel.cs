@@ -40,13 +40,23 @@ namespace FluentHwInfo.ViewModels
 
                 if (SettingsService.Instance.HideSensorsCompletely)
                 {
-                    // sensor disappears from the main list entirely
                     Sensors.Remove(sensor);
-                    HiddenSensors.Add(sensor);
+
+                    // find the first hidden sensor that originally came after this one, insert right before it
+                    var insertBeforeSensor = HiddenSensors.FirstOrDefault(s => s.SortOrder > sensor.SortOrder);
+
+                    if (insertBeforeSensor != null)
+                    {
+                        HiddenSensors.Insert(HiddenSensors.IndexOf(insertBeforeSensor), sensor);
+                    }
+                    else
+                    {
+                        // no later sensor found; place at the very end
+                        HiddenSensors.Add(sensor);
+                    }
                 }
                 else
                 {
-                    // sensor stays in the main list but is greyed out
                     sensor.IsDisabled = true;
                 }
             }
