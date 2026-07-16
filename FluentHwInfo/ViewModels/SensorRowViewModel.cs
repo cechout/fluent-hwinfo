@@ -218,14 +218,14 @@ namespace FluentHwInfo.ViewModels
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
             _isSubscribedToThreshold = true;
 
-            ThresholdService.Instance.ThresholdChanged += OnThresholdChanged;
-            ApplyThreshold(ThresholdService.Instance.GetThreshold(_id));
+            SensorStateService.Instance.StateChanged += OnStateChanged;
+            ApplyThreshold(SensorStateService.Instance.GetState(_id).Threshold);
         }
 
-        private void OnThresholdChanged(string sensorId, SensorThreshold threshold)
+        private void OnStateChanged(string sensorId, SensorState state)
         {
             if (sensorId != _id) return;
-            _dispatcherQueue.TryEnqueue(() => ApplyThreshold(threshold));
+            _dispatcherQueue.TryEnqueue(() => ApplyThreshold(state.Threshold));
         }
 
         private void ApplyThreshold(SensorThreshold threshold)

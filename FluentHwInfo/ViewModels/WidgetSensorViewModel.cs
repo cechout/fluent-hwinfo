@@ -98,7 +98,7 @@ namespace FluentHwInfo.ViewModels
                     _isThresholdEnabled = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(ThresholdValue));
-                    PushThresholdToService();
+                    PushStateToService();
                     RecalculateColor();
                 }
             }
@@ -114,7 +114,7 @@ namespace FluentHwInfo.ViewModels
                     _manualThreshold = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(ThresholdValue));
-                    PushThresholdToService();
+                    PushStateToService();
                     RecalculateColor();
                 }
             }
@@ -131,7 +131,7 @@ namespace FluentHwInfo.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsAboveDirection));
                 OnPropertyChanged(nameof(IsBelowDirection));
-                PushThresholdToService();
+                PushStateToService();
                 RecalculateColor();
             }
         }
@@ -187,7 +187,7 @@ namespace FluentHwInfo.ViewModels
                 _thresholdColor = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ThresholdColorBrush));
-                PushThresholdToService();
+                PushStateToService();
                 RecalculateColor();
             }
         }
@@ -240,15 +240,16 @@ namespace FluentHwInfo.ViewModels
             SettingsService.Instance.GraphColorChanged += OnGraphColorChanged;
             SettingsService.Instance.GraphDataPointsChanged += OnGraphDataPointsChanged;
 
-            // restore this sensors threshold if one was already configured (e.g. previously pinned)
-            var existingThreshold = ThresholdService.Instance.GetThreshold(SensorId);
-            if (existingThreshold != null)
-            {
-                _isThresholdEnabled = existingThreshold.IsEnabled;
-                _manualThreshold = existingThreshold.Value;
-                _thresholdDirection = existingThreshold.Direction;
-                _thresholdColor = existingThreshold.Color;
-            }
+            // restore this sensors full state if it was already configured before (e.g. previously pinned, or loaded from
+            // disk at startup)
+            var existingState = SensorStateService.Instance.GetState(SensorId);
+            _isThresholdEnabled = existingState.Threshold.IsEnabled;
+            _manualThreshold = existingState.Threshold.Value;
+            _thresholdDirection = existingState.Threshold.Direction;
+            _thresholdColor = existingState.Threshold.Color;
+            _isAutoScaled = existingState.IsAutoScaled;
+            _manualYMax = existingState.ManualYMax;
+            UpdateYMaxDisplay();
         }
 
 
@@ -259,15 +260,21 @@ namespace FluentHwInfo.ViewModels
             SettingsService.Instance.GraphDataPointsChanged -= OnGraphDataPointsChanged;
         }
         // pushes the full threshold snapshot to the shared service so MainWindow can pick it up
-        private void PushThresholdToService()
+        // pushes the full state snapshot (threshold + Y-axis) to the shared service, so
+        // MainWindow can pick up threshold changes and disk persistence stays up to date
+        private void PushStateToService()
         {
-            ThresholdService.Instance.SetThreshold(SensorId, new SensorThreshold
+            var state = SensorStateService.Instance.GetState(SensorId);
+            state.Threshold = new SensorThreshold
             {
                 IsEnabled = _isThresholdEnabled,
                 Value = _manualThreshold,
                 Direction = _thresholdDirection,
                 Color = _thresholdColor
-            });
+            };
+            state.IsAutoScaled = _isAutoScaled;
+            state.ManualYMax = _manualYMax;
+            SensorStateService.Instance.SetState(SensorId, state);
         }
         // re-evaluates the current values color against this sensors own threshold config
         private void RecalculateColor()
