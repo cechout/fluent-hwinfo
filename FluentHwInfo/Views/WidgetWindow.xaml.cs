@@ -124,6 +124,10 @@ namespace FluentHwInfo.Views
             this.Activated -= Window_Activated;
             _configurationSource = null;
             CurrentInstance = null;
+
+            // if the dashboard was already closed too, there is nothing left to keep the app alive for
+            MainWindow.CurrentInstance?.EvaluateFullExit();
+
         }
         private void Window_Activated(object sender, WindowActivatedEventArgs args)
         {

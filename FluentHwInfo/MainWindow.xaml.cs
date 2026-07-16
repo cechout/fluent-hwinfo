@@ -34,6 +34,14 @@ namespace FluentHwInfo
         private const int GWL_EXSTYLE = -20;
         private const int WS_EX_TOOLWINDOW = 0x00000080;
         private const int WS_EX_NOACTIVATE = 0x08000000;
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOZORDER = 0x0004;
+        private const uint SWP_NOACTIVATE = 0x0010;
+        private const uint SWP_FRAMECHANGED = 0x0020; 
 
 
         // properties and fields
@@ -289,9 +297,11 @@ namespace FluentHwInfo
                 var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
                 int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
                 SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
+                SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
                 this.Hide();
                 CheckAndHideToTray();
+                EvaluateFullExit();
             }
         }
         public void OpenDashboard()
@@ -329,6 +339,16 @@ namespace FluentHwInfo
                     opWidget.Restore();
                 }
                 Views.WidgetWindow.CurrentInstance.Activate();
+            }
+        }
+        public void EvaluateFullExit()
+        {
+            // if the dashboard is closed and no widget is pinned anymore, nothing is left running;
+            // fully exit instead of sitting in the tray forever with no way to bring it back
+            if (_isDashboardClosed && Views.WidgetWindow.CurrentInstance == null)
+            {
+                _isForceClosing = true;
+                Application.Current.Exit();
             }
         }
     }
