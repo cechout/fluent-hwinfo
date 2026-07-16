@@ -11,25 +11,21 @@ namespace FluentHwInfo.Views
 {
     public sealed partial class SensorsPage : Page
     {
-        // here we define the ViewModel SensorViewModel as a property of the SensorsPage class, which is the DataContext for
-        // the whole XAML page
-        // so {x:Bind ViewModel.HardwareGroups} can find its target
         public SensorsViewModel ViewModel { get; }
-
-        // we remember the currently open widget window 
-        private static WidgetWindow _currentWidgetWindow = null;
-
+        private static WidgetWindow _currentWidgetWindow = null; // we remember the currently open widget window 
         private int _infoBarTicket = 0;
+        private HiddenSensorsWindow _currentHiddenSensorsWindow;
 
+
+        // constructor
         public SensorsPage()
         {
             this.InitializeComponent();
-
-            // change: we do not create a new ViewModel anymore
-            // we bind the UI simply to the central singleton instance
-            ViewModel = SensorsViewModel.Instance;
+            ViewModel = SensorsViewModel.Instance; // we bind the UI simply to the central singleton instance
         }
 
+
+        // user interaction
         private async void PinToWidget_Click(object sender, RoutedEventArgs e)
         {
             // flatten the nested groups and filter for selected items
@@ -126,6 +122,48 @@ namespace FluentHwInfo.Views
                     sensor.ResetMinMax();
                 }
             }
+        }
+
+        private async void HideSensors_Click(object sender, RoutedEventArgs e)
+        {
+            // check across all groups whether anything is selected at all
+            bool anySelected = ViewModel.HardwareGroups
+                .SelectMany(group => group.Sensors)
+                .Any(sensor => sensor.IsSelected);
+
+            // show the same "nothing selected" flyout as PinToWidget_Click
+            if (!anySelected)
+            {
+                _infoBarTicket++;
+                int currentTicket = _infoBarTicket;
+
+                AnimateInfoBar(0, true);
+
+                await Task.Delay(2000);
+
+                if (currentTicket == _infoBarTicket)
+                {
+                    AnimateInfoBar(100, false);
+                }
+                return;
+            }
+
+            ViewModel.HideSelectedSensors();
+        }
+
+        private void ShowHiddenSensors_Click(object sender, RoutedEventArgs e)
+        {
+            // if a window is already open, force it to close and rebuild fresh, same pattern as the widget window
+            _currentHiddenSensorsWindow?.Close();
+
+            _currentHiddenSensorsWindow = new HiddenSensorsWindow();
+
+            _currentHiddenSensorsWindow.Closed += (s, args) =>
+            {
+                _currentHiddenSensorsWindow = null;
+            };
+
+            _currentHiddenSensorsWindow.Activate();
         }
     }
 }

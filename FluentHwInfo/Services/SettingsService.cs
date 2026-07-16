@@ -18,6 +18,7 @@ namespace FluentHwInfo.Services
         public event Action<bool, Windows.UI.Color> GraphColorChanged;
         public event Action<int> GraphDataPointsChanged;
         public event Action<bool> MinimizeToTrayChanged;
+        public event Action<bool> HideSensorsCompletelyChanged;
 
         // fields
         private string _appTheme = "Default";
@@ -156,6 +157,20 @@ namespace FluentHwInfo.Services
                 {
                     _minimizeToTray = value;
                     MinimizeToTrayChanged?.Invoke(_minimizeToTray);
+                }
+            }
+        }
+
+        private bool _hideSensorsCompletely = true;
+        public bool HideSensorsCompletely
+        {
+            get => _hideSensorsCompletely;
+            set
+            {
+                if (_hideSensorsCompletely != value)
+                {
+                    _hideSensorsCompletely = value;
+                    HideSensorsCompletelyChanged?.Invoke(_hideSensorsCompletely);
                 }
             }
         }

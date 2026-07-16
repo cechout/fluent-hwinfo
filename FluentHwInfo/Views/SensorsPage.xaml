@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
 
 
-        <!--  control buttons  -->
+        <!--  header: control buttons  -->
         <!--  (border has background: {ThemeResource SolidBackgroundFillColorTertiaryBrush})  -->
         <Border
             Grid.Row="0"
@@ -47,6 +47,7 @@
                     Orientation="Horizontal"
                     Spacing="0">
 
+                    <!--  reset min max button  -->
                     <Button
                         Height="36"
                         HorizontalAlignment="Left"
@@ -67,6 +68,7 @@
                         </Button.ContentTemplate>
                     </Button>
 
+                    <!--  pin to widget button  -->
                     <Button
                         Height="36"
                         HorizontalAlignment="Right"
@@ -85,32 +87,54 @@
                                 </StackPanel>
                             </DataTemplate>
                         </Button.ContentTemplate>
+                    </Button>
 
-                        <!--<FlyoutBase.AttachedFlyout>
-                            <Flyout x:Name="NoSensorsFlyout" Placement="Bottom">
-                                <Flyout.FlyoutPresenterStyle>
-                                    <Style TargetType="FlyoutPresenter">
-                                        <Setter Property="Background" Value="{ThemeResource SystemFillColorCautionBackgroundBrush}" />
-                                        <Setter Property="Padding" Value="12,8" />
-                                        <Setter Property="CornerRadius" Value="8" />
-                                        <Setter Property="MinHeight" Value="0" />
-                                        <Setter Property="MinWidth" Value="0" />
-                                    </Style>
-                                </Flyout.FlyoutPresenterStyle>
-
+                    <!--  hide sensors button  -->
+                    <Button
+                        Height="36"
+                        VerticalAlignment="Bottom"
+                        Click="HideSensors_Click"
+                        Content="Hide Sensor(s)"
+                        Style="{ThemeResource SubtleButtonStyle}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <FontIcon FontSize="14" Glyph="&#xE7BA;" />
-                                    <TextBlock FontSize="14" Text="No sensors selected" />
+                                    <FontIcon FontSize="15" Glyph="&#xED1A;" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{ThemeResource CaptionTextBlockStyle}"
+                                        Text="{Binding}" />
                                 </StackPanel>
-                            </Flyout>
-                        </FlyoutBase.AttachedFlyout>-->
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+
+                    <!--  show hidden sensors button  -->
+                    <Button
+                        Height="36"
+                        VerticalAlignment="Bottom"
+                        Click="ShowHiddenSensors_Click"
+                        Content="Show Hidden Sensors"
+                        IsEnabled="{x:Bind ViewModel.HasHiddenSensors, Mode=OneWay}"
+                        Style="{ThemeResource SubtleButtonStyle}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon FontSize="15" Glyph="&#xE890;" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{ThemeResource CaptionTextBlockStyle}"
+                                        Text="{Binding}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
                     </Button>
 
                 </StackPanel>
             </Grid>
         </Border>
 
-        <!--  items header labels  -->
+        <!--  header: items header labels  -->
         <!--  (border has background: {ThemeResource SolidBackgroundFillColorTertiaryBrush})  -->
         <Border Grid.Row="1" Background="Transparent">
             <Grid HorizontalAlignment="Stretch">
@@ -167,7 +191,7 @@
         </Border>
 
 
-        <!--  scrollviewer with all the cards of different hardware groups  -->
+        <!--  content: scrollviewer with all the cards of different hardware groups  -->
         <ScrollViewer
             x:Name="MainScrollViewer"
             Grid.Row="2"
@@ -192,7 +216,7 @@
                             <ComboBoxItem>Custom Selection</ComboBoxItem>
                             </ComboBox>-->
 
-                            <!--  items header  -->
+                            <!--  column labels  -->
                             <controls:SettingsExpander.ItemsHeader>
                                 <controls:SettingsCard
                                     MinHeight="0"

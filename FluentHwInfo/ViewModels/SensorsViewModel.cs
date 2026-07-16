@@ -2,12 +2,14 @@
 using Microsoft.UI.Dispatching;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace FluentHwInfo.ViewModels
 {
-    public class SensorsViewModel
+    public class SensorsViewModel : INotifyPropertyChanged
     {
         // fields
         public ObservableCollection<HardwareGroupViewModel> HardwareGroups { get; set; }
@@ -38,6 +40,9 @@ namespace FluentHwInfo.ViewModels
             }
         }
 
+        // hidden sensors
+        public bool HasHiddenSensors => HardwareGroups.Any(g => g.HasHiddenSensors);
+
 
         // constructor
         private SensorsViewModel()
@@ -65,11 +70,13 @@ namespace FluentHwInfo.ViewModels
                     if (existingGroup == null)
                     {
                         existingGroup = new HardwareGroupViewModel { HardwareName = data.HardwareName };
+                        existingGroup.PropertyChanged += Group_PropertyChanged;
                         HardwareGroups.Add(existingGroup);
                     }
 
-                    // check if we already have a row for this specific sensor ID inside this group
-                    var existingRow = existingGroup.Sensors.FirstOrDefault(r => r.Id == data.Id);
+                    // check if we already have a row for this specific sensor ID inside this group (visible or hidden)
+                    var existingRow = existingGroup.Sensors.FirstOrDefault(r => r.Id == data.Id)
+                        ?? existingGroup.HiddenSensors.FirstOrDefault(r => r.Id == data.Id);
 
                     if (existingRow != null)
                     {
@@ -84,6 +91,7 @@ namespace FluentHwInfo.ViewModels
                             Id = data.Id,
                             Name = data.Name,
                             SensorType = data.SensorType,
+                            SortOrder = existingGroup.Sensors.Count + existingGroup.HiddenSensors.Count,
                         };
 
                         newRow.UpdateValue(data.Value);
@@ -97,6 +105,40 @@ namespace FluentHwInfo.ViewModels
                     _initialLoadTcs.SetResult(true);
                 }
             });
+        }
+
+
+        // relays a groups hidden-state change into our own aggregated properties
+        private void Group_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(HardwareGroupViewModel.HasHiddenSensors))
+            {
+                OnPropertyChanged(nameof(HasHiddenSensors));
+            }
+        }
+        // hides every currently selected sensor, across all hardware groups at once
+        public void HideSelectedSensors()
+        {
+            foreach (var group in HardwareGroups)
+            {
+                group.HideSelectedSensors();
+            }
+        }
+        // restores every currently selected hidden sensor, across all hardware groups at once
+        public void RestoreSelectedHiddenSensors()
+        {
+            foreach (var group in HardwareGroups)
+            {
+                group.RestoreSelectedHiddenSensors();
+            }
+        }
+
+
+        // INotifyPropertyChanged implementation
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

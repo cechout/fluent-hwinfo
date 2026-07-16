@@ -25,6 +25,7 @@ namespace FluentHwInfo.ViewModels
             }
         }
         public string Name { get; set; } = "Unknown Sensor";
+        public int SortOrder { get; set; } // original creation order
         private string _unit = "";
         public string SensorType
         {
@@ -55,6 +56,32 @@ namespace FluentHwInfo.ViewModels
                 if (_isSelected != value)
                 {
                     _isSelected = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _isHidden;
+        public bool IsHidden
+        {
+            get => _isHidden;
+            set
+            {
+                if (_isHidden != value)
+                {
+                    _isHidden = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _isDisabled;
+        public bool IsDisabled
+        {
+            get => _isDisabled;
+            set
+            {
+                if (_isDisabled != value)
+                {
+                    _isDisabled = value;
                     OnPropertyChanged();
                 }
             }
