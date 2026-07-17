@@ -1,4 +1,5 @@
 ﻿using FluentHwInfo.Services;
+using FluentHwInfo.Views;
 using Microsoft.UI.Dispatching;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -43,6 +44,21 @@ namespace FluentHwInfo.ViewModels
         // hidden sensors
         public bool HasHiddenSensors => HardwareGroups.Any(g => g.HasHiddenSensors);
 
+        // true whenever a WidgetWindow is currently open; drives the enabled-state of the "Select Pinned" button
+        private bool _isWidgetOpen;
+        public bool IsWidgetOpen
+        {
+            get => _isWidgetOpen;
+            private set
+            {
+                if (_isWidgetOpen != value)
+                {
+                    _isWidgetOpen = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         // constructor
         private SensorsViewModel()
@@ -53,6 +69,10 @@ namespace FluentHwInfo.ViewModels
             // HardwareMonitorService
             _service = HardwareMonitorService.Instance; // get HardwareMonitorService instance
             _service.HardwareDataUpdated += OnHardwareDataUpdated; // subscribe to the master event
+
+            // covers the case where a widget auto-reopened (saved state) before this VM was constructed
+            IsWidgetOpen = WidgetWindow.CurrentInstance != null;
+            WidgetWindow.WidgetStateChanged += OnWidgetStateChanged;
         }
 
 
@@ -135,6 +155,11 @@ namespace FluentHwInfo.ViewModels
                 OnPropertyChanged(nameof(HasHiddenSensors));
             }
         }
+        // keeps IsWidgetOpen in sync whenever the widget window opens or closes
+        private void OnWidgetStateChanged()
+        {
+            IsWidgetOpen = WidgetWindow.CurrentInstance != null;
+        }
         // hides every currently selected sensor, across all hardware groups at once
         public void HideSelectedSensors()
         {
@@ -149,6 +174,37 @@ namespace FluentHwInfo.ViewModels
             foreach (var group in HardwareGroups)
             {
                 group.RestoreSelectedHiddenSensors();
+            }
+        }
+        // sets the checkbox exactly on the sensors currently pinned to the active widget window
+        // all other visible sensors get deselected so the checkbox state mirrors the widget contents 1:1
+        public void SelectPinnedSensors()
+        {
+            var widgetViewModel = WidgetWindow.CurrentInstance?.ViewModel;
+            if (widgetViewModel == null) return; // widget is closed, nothing to sync against
+
+            var pinnedIds = new HashSet<string>(widgetViewModel.PinnedSensors.Select(s => s.SensorId));
+
+            foreach (var group in HardwareGroups)
+            {
+                foreach (var sensor in group.Sensors)
+                {
+                    // a sensor that got hidden after being pinned still lingers in the widgets PinnedSensors list
+                    // (it just stops receiving updates); never select it back, no matter which mode hid it
+                    sensor.IsSelected = !sensor.IsHidden && pinnedIds.Contains(sensor.Id);
+                }
+            }
+        }
+        // clears every checkbox in the main sensor list
+        // hidden sensors are untouched because they live in their own window with their own selection scope
+        public void DeselectAllSensors()
+        {
+            foreach (var group in HardwareGroups)
+            {
+                foreach (var sensor in group.Sensors)
+                {
+                    sensor.IsSelected = false;
+                }
             }
         }
 

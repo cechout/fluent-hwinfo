@@ -28,6 +28,7 @@ namespace FluentHwInfo.Views
         private const string WindowKey = "Widget"; // key under which this windows state is saved
         public WidgetViewModel ViewModel { get; } // expose the ViewModel so {x:Bind} in XAML can access it
         public static WidgetWindow CurrentInstance { get; private set; }
+        public static event Action WidgetStateChanged;
 
         // system backdrop controllers and configuration
         private DesktopAcrylicController _acrylicController;
@@ -47,6 +48,7 @@ namespace FluentHwInfo.Views
             this.InitializeComponent();
             this.AppWindow.SetIcon("Assets\\Icon\\Icon.ico");
             CurrentInstance = this;
+            WidgetStateChanged?.Invoke();
 
             // window configuration
             _appWindow = this.AppWindow;
@@ -149,7 +151,7 @@ namespace FluentHwInfo.Views
         private void WidgetWindow_Closed(object sender, WindowEventArgs args)
         {
             // mark the widget as closed so it wont auto-reopen on the next launch; keep the last rect and pinned sensors
-            // around in case it's simply re-pinned later this session
+            // around in case its simply re-pinned later this session
             SaveWindowState(pinnedSensors: null, wasOpen: false);
 
             // we detach the event handlers from the settings service
@@ -171,6 +173,7 @@ namespace FluentHwInfo.Views
             this.Activated -= Window_Activated;
             _configurationSource = null;
             CurrentInstance = null;
+            WidgetStateChanged?.Invoke();
 
             // if the dashboard was already closed too, there is nothing left to keep the app alive for
             MainWindow.CurrentInstance?.EvaluateFullExit();

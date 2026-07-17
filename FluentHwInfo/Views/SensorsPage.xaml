@@ -112,6 +112,29 @@
                                 <FontIcon Glyph="&#xE8A7;" />
                             </AppBarButton.Icon>
                         </AppBarButton>
+
+                        <AppBarSeparator x:Name="ButtonSeparator2" />
+
+                        <!--  Select Pinned Sensors button  -->
+                        <AppBarButton
+                            x:Name="SelectPinnedButton"
+                            Click="SelectPinned_Click"
+                            IsEnabled="{x:Bind ViewModel.IsWidgetOpen, Mode=OneWay}"
+                            Label="Select all Pinned Sensors from Widget Window">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xE73A;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
+
+                        <!--  Unselect All Sensors button  -->
+                        <AppBarButton
+                            x:Name="DeselectAllButton"
+                            Click="DeselectAll_Click"
+                            Label="Deselect All Sensors">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xE8E6;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
                     </CommandBar>
 
                 </Grid>

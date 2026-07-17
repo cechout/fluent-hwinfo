@@ -66,6 +66,12 @@ namespace FluentHwInfo.Views
             {
                 UpdateDisplayState();
             }
+            // covers external selection changes (e.g. SelectPinnedSensors / DeselectAllSensors), since those bypass
+            // RootGrid_Tapped and never trigger UpdateVisualState on their own
+            else if (e.PropertyName == nameof(SensorRowViewModel.IsSelected))
+            {
+                UpdateVisualState();
+            }
         }
 
 

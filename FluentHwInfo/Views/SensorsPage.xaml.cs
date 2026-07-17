@@ -164,6 +164,14 @@ namespace FluentHwInfo.Views
 
             _currentHiddenSensorsWindow.Activate();
         }
+        private void SelectPinned_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.SelectPinnedSensors();
+        }
+        private void DeselectAll_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.DeselectAllSensors();
+        }
 
 
         // helper method to fix the rendering of the items
@@ -192,7 +200,10 @@ namespace FluentHwInfo.Views
                 ButtonSeparator,
                 ResetValuesButton,
                 HideSensorsButton,
-                ShowHiddenSensorsButton
+                ShowHiddenSensorsButton,
+                ButtonSeparator2,
+                SelectPinnedButton,
+                DeselectAllButton
             };
 
             _commandBarOverflowStartIndex = -1;
