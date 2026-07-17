@@ -57,6 +57,13 @@ namespace FluentHwInfo.ViewModels
                 {
                     _isSelected = value;
                     OnPropertyChanged();
+
+                    // persist immediately so the checkbox state survives an app restart; Id is always set by this point
+                    // since object initializers set it before IsSelected
+                    if (!string.IsNullOrEmpty(_id))
+                    {
+                        SensorStateService.Instance.SetSelected(_id, value);
+                    }
                 }
             }
         }

@@ -11,5 +11,6 @@ namespace FluentHwInfo.Models
         public SensorThreshold Threshold { get; set; } = new SensorThreshold();
         public bool IsAutoScaled { get; set; } = true;
         public double ManualYMax { get; set; } = 100;
+        public bool IsSelected { get; set; }
     }
 }

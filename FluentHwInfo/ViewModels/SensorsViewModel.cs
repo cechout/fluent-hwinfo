@@ -90,8 +90,9 @@ namespace FluentHwInfo.ViewModels
                     {
                         // row does not exist yet -> we dynamically create a new one
                         // a sensor discovered for the first time this session may already have persisted state from a
-                        // previous run (e.g. it was hidden before closing)
-                        bool isHidden = SensorStateService.Instance.GetState(data.Id).IsHidden;
+                        // previous run (e.g. it was hidden or selected before closing)
+                        var persistedState = SensorStateService.Instance.GetState(data.Id);
+                        bool isHidden = persistedState.IsHidden;
                         var newRow = new SensorRowViewModel
                         {
                             Id = data.Id,
@@ -99,6 +100,7 @@ namespace FluentHwInfo.ViewModels
                             SensorType = data.SensorType,
                             SortOrder = existingGroup.Sensors.Count + existingGroup.HiddenSensors.Count,
                             IsHidden = isHidden,
+                            IsSelected = persistedState.IsSelected,
                         };
 
                         if (isHidden)

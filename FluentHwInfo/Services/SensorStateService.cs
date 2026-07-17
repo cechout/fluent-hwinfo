@@ -40,6 +40,14 @@ namespace FluentHwInfo.Services
             state.IsHidden = isHidden;
             SetState(sensorId, state);
         }
+        // convenience helper for checkbox selection: flips just the selected flag without touching that
+        // sensors hidden state, threshold, or Y-axis config
+        public void SetSelected(string sensorId, bool isSelected)
+        {
+            var state = GetState(sensorId);
+            state.IsSelected = isSelected;
+            SetState(sensorId, state);
+        }
 
 
         // persistence 
