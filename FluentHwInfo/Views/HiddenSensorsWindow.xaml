@@ -13,15 +13,17 @@
     <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
 
         <!--  custom title bar  -->
         <Grid
             x:Name="CustomTitleBar"
             Grid.Row="0"
-            Height="28"
+            Height="32"
             Background="Transparent">
 
             <TextBlock
@@ -31,9 +33,44 @@
                 Text="Hidden Sensors" />
         </Grid>
 
+
+        <!--  header: items header labels  -->
+        <Border Grid.Row="1" Background="Transparent">
+            <Grid HorizontalAlignment="Stretch">
+
+                <Grid Margin="32,8,32,12" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="140" />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="36,0,0,0"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Sensor" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Unit" />
+                </Grid>
+
+                <Border
+                    Height="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+
+            </Grid>
+        </Border>
+
+
         <!--  hidden sensors, grouped by hardware, same layout as the main sensor list on SensorsPage  -->
         <ScrollViewer
-            Grid.Row="1"
+            Grid.Row="2"
             Padding="16,0,16,0"
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
@@ -45,7 +82,7 @@
                         <controls:SettingsExpander
                             Margin="0,16,0,0"
                             Header="{x:Bind HardwareName, Mode=OneWay}"
-                            IsExpanded="True"
+                            IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
                             ItemsSource="{x:Bind HiddenSensors, Mode=OneWay}"
                             Loaded="SettingsExpander_Loaded"
                             Visibility="{x:Bind HiddenPanelVisibility, Mode=OneWay}">
@@ -127,6 +164,31 @@
                                 </DataTemplate>
                             </controls:SettingsExpander.ItemTemplate>-->
 
+                            <controls:SettingsExpander.ItemsHeader>
+                                <Border Padding="16,12,16,8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+
+                                    <Grid HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" MinWidth="140" />
+                                            <ColumnDefinition Width="40" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            Margin="36,0,0,0"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="Sensor" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="Unit" />
+                                    </Grid>
+                                </Border>
+                            </controls:SettingsExpander.ItemsHeader>
+
                             <!--  items  -->
                             <controls:SettingsExpander.ItemTemplate>
                                 <DataTemplate x:DataType="local1:SensorRowViewModel">
@@ -145,7 +207,7 @@
 
         <!--  bottom bar with the restore action  -->
         <Border
-            Grid.Row="2"
+            Grid.Row="3"
             Padding="16,12,16,12"
             Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"

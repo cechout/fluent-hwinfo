@@ -18,6 +18,21 @@ namespace FluentHwInfo.ViewModels
         public bool HasHiddenSensors => HiddenSensors.Count > 0;
         public Visibility HiddenPanelVisibility => HasHiddenSensors ? Visibility.Visible : Visibility.Collapsed;
 
+        // drives IsExpanded on both SettingsExpanders that show this group 
+        private bool _isExpanded;
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         // constructor
         public HardwareGroupViewModel()

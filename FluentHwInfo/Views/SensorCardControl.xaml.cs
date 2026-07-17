@@ -183,7 +183,11 @@ namespace FluentHwInfo.Views
                 MinimumColumn.Width = new GridLength(0);
                 MaximumColumn.Width = new GridLength(0);
                 AverageColumn.Width = new GridLength(0);
-                NameColumn.Width = new GridLength(1, GridUnitType.Star);
+
+                // name column shrinks to make room for the new unit column
+                NameColumn.Width = new GridLength(3, GridUnitType.Star);
+                UnitColumn.Width = new GridLength(40);
+                UnitText.Visibility = Visibility.Visible;
 
                 VisualStateManager.GoToState(this, "FullDetails", true);
                 return;

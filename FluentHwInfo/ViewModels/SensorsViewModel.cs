@@ -141,6 +141,7 @@ namespace FluentHwInfo.ViewModels
                 // signalize that the first data batch has been successfully processed
                 if (!_initialLoadTcs.Task.IsCompleted && HardwareGroups.Count > 0)
                 {
+                    HardwareGroups[0].IsExpanded = true;
                     _initialLoadTcs.SetResult(true);
                 }
             });

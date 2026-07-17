@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using WinRT;
 using FluentHwInfo.Helpers;
 using CommunityToolkit.WinUI.Controls;
+using System.Linq;
 
 namespace FluentHwInfo.Views
 {
@@ -43,6 +44,11 @@ namespace FluentHwInfo.Views
             presenter.IsMaximizable = false;
             presenter.IsMinimizable = false;
             presenter.IsResizable = true;
+
+            double scaleFactor = GetScaleFactor();
+            presenter.PreferredMinimumWidth = (int)(280 * scaleFactor);
+            presenter.PreferredMinimumHeight = (int)(200 * scaleFactor);
+
             _appWindow.SetPresenter(presenter);
 
             SetWindowSize();
@@ -53,6 +59,7 @@ namespace FluentHwInfo.Views
 
             SettingsService.Instance.ThemeChanged += OnThemeChanged;
             this.Closed += HiddenSensorsWindow_Closed;
+            RootGrid.Loaded += RootGrid_Loaded;
         }
 
 
@@ -60,9 +67,7 @@ namespace FluentHwInfo.Views
         // sets a fixed default size for the window; position is left to Windows own default placement
         private void SetWindowSize()
         {
-            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            uint dpi = GetDpiForWindow(hwnd);
-            double scaleFactor = dpi / 96.0; // 96 is the Windows standard for 100% I guess
+            double scaleFactor = GetScaleFactor();
 
             double desiredXamlWidth = 340;
             double desiredXamlHeight = 500;
@@ -71,6 +76,24 @@ namespace FluentHwInfo.Views
             int physicalHeight = (int)(desiredXamlHeight * scaleFactor);
 
             _appWindow.Resize(new Windows.Graphics.SizeInt32(physicalWidth, physicalHeight));
+        }
+        // converts the screen DPI to a scale factor (100% = 1.0, 125% = 1.25, etc.), same helper as in WidgetWindow
+        private double GetScaleFactor()
+        {
+            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            uint dpi = GetDpiForWindow(hwnd);
+            return dpi / 96.0;
+        }
+        // expands the first group that actually has hidden sensors 
+        private void RootGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            RootGrid.Loaded -= RootGrid_Loaded; // only ever needed once per window instance
+
+            var firstGroupWithHidden = ViewModel.HardwareGroups.FirstOrDefault(g => g.HasHiddenSensors);
+            if (firstGroupWithHidden != null)
+            {
+                firstGroupWithHidden.IsExpanded = true;
+            }
         }
         private void HiddenSensorsWindow_Closed(object sender, WindowEventArgs args)
         {

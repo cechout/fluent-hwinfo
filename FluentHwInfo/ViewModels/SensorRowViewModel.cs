@@ -26,12 +26,12 @@ namespace FluentHwInfo.ViewModels
         }
         public string Name { get; set; } = "Unknown Sensor";
         public int SortOrder { get; set; } // original creation order
-        private string _unit = "";
+        public string Unit { get; private set; } = "";
         public string SensorType
         {
             set
             {
-                _unit = value switch
+                Unit = value switch
                 {
                     "Temperature" => "°C",
                     "Power" => "W",
@@ -189,10 +189,10 @@ namespace FluentHwInfo.ViewModels
             _avg = _sum / _count;
 
             // build strings for the UI with the dynamic unit
-            CurrentValue = $"{newValue:0.0} {_unit}";
-            MinimumValue = $"{_min:0.0} {_unit}";
-            MaximumValue = $"{_max:0.0} {_unit}";
-            AverageValue = $"{_avg:0.0} {_unit}";
+            CurrentValue = $"{newValue:0.0} {Unit}";
+            MinimumValue = $"{_min:0.0} {Unit}";
+            MaximumValue = $"{_max:0.0} {Unit}";
+            AverageValue = $"{_avg:0.0} {Unit}";
 
             RecalculateColors();
         }

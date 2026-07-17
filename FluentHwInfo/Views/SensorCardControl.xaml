@@ -70,6 +70,10 @@
                     x:Name="AverageColumn"
                     Width="*"
                     MinWidth="65" />
+                <ColumnDefinition
+                    x:Name="UnitColumn"
+                    Width="0"
+                    MinWidth="0" />
             </Grid.ColumnDefinitions>
 
             <!--  checkbox with sensor name  -->
@@ -133,6 +137,17 @@
                 Foreground="{x:Bind ViewModel.AverageValueColor, Mode=OneWay}"
                 Style="{ThemeResource CaptionTextBlockStyle}"
                 Text="{x:Bind ViewModel.AverageValue, Mode=OneWay}" />
+
+            <!--  unit, only visible in compact mode (to disambiguate sensors that share the exact same name)  -->
+            <TextBlock
+                x:Name="UnitText"
+                Grid.Column="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{ThemeResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.Unit, Mode=OneWay}"
+                Visibility="Collapsed" />
         </Grid>
 
 

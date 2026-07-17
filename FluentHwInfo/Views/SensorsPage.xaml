@@ -214,7 +214,7 @@
                             <controls:SettingsExpander
                                 Margin="0,16,0,0"
                                 Header="{x:Bind HardwareName, Mode=OneWay}"
-                                IsExpanded="False"
+                                IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
                                 ItemsSource="{x:Bind Sensors, Mode=OneWay}"
                                 Loaded="SettingsExpander_Loaded">
 
