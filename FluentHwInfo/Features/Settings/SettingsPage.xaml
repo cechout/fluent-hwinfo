@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="FluentHwInfo.Features.Settings.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel
+            Margin="24"
+            HorizontalAlignment="Stretch"
+            Spacing="4">
+
+            <TextBlock
+                Margin="0,0,0,12"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="Settings" />
+
+
+            <!--  general settings  -->
+            <TextBlock
+                Margin="1,8,0,6"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="General Settings" />
+
+            <controls:SettingsCard
+                Description="Light, dark, or match Windows"
+                Header="App Theme"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE790;}">
+                <ComboBox
+                    x:Name="ThemeComboBox"
+                    Width="150"
+                    SelectionChanged="ThemeComboBox_SelectionChanged">
+                    <ComboBoxItem Content="System Default" Tag="Default" />
+                    <ComboBoxItem Content="Light" Tag="Light" />
+                    <ComboBoxItem Content="Dark" Tag="Dark" />
+                </ComboBox>
+            </controls:SettingsCard>
+
+            <!--  engine settings  -->
+            <controls:SettingsCard
+                Description="How often sensors are polled"
+                Header="Update Interval"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE916;}">
+                <ComboBox
+                    x:Name="IntervalComboBox"
+                    Width="150"
+                    SelectionChanged="IntervalComboBox_SelectionChanged">
+                    <ComboBoxItem Content="100ms" Tag="100" />
+                    <ComboBoxItem Content="250ms" Tag="250" />
+                    <ComboBoxItem Content="500ms" Tag="500" />
+                    <ComboBoxItem Content="1000ms" Tag="1000" />
+                    <ComboBoxItem Content="2000ms" Tag="2000" />
+                </ComboBox>
+            </controls:SettingsCard>
+
+            <!--  behavior settings  -->
+            <controls:SettingsCard
+                Description="Hide app to system tray when all windows are minimized"
+                Header="Minimize to System Tray"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE744;}">
+                <ToggleSwitch
+                    x:Name="MinimizeToTrayToggle"
+                    OffContent="Off"
+                    OnContent="On"
+                    Toggled="MinimizeToTrayToggle_Toggled" />
+            </controls:SettingsCard>
+
+
+            <!--  widget settings  -->
+            <TextBlock
+                Margin="1,20,0,6"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="Widget Appearance" />
+
+            <!--  background material  -->
+            <controls:SettingsExpander
+                Description="Backdrop effect and color for the widget"
+                Header="Background Material"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xEF1F;}"
+                IsExpanded="False">
+
+                <ComboBox
+                    x:Name="BackdropComboBox"
+                    Width="160"
+                    SelectionChanged="BackdropComboBox_SelectionChanged">
+                    <ComboBoxItem Content="Desktop Acrylic" Tag="Acrylic" />
+                    <ComboBoxItem Content="System Mica" Tag="Mica" />
+                    <ComboBoxItem Content="Solid (No Blur)" Tag="None" />
+                </ComboBox>
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Description="Tint strength (Acrylic only)" Header="Tint Opacity">
+                        <Slider
+                            x:Name="TintSlider"
+                            Width="200"
+                            Maximum="1"
+                            Minimum="0"
+                            StepFrequency="0.05"
+                            TickFrequency="0.1"
+                            ValueChanged="TintSlider_ValueChanged" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Brightness, independent of tint color (Acrylic only)" Header="Luminosity Opacity">
+                        <Slider
+                            x:Name="LuminositySlider"
+                            Width="200"
+                            Maximum="1"
+                            Minimum="0"
+                            StepFrequency="0.05"
+                            TickFrequency="0.1"
+                            ValueChanged="LuminositySlider_ValueChanged" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Accent or custom color (Acrylic and Mica)" Header="Background Color Source">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ComboBox
+                                x:Name="ColorSourceComboBox"
+                                Width="160"
+                                SelectionChanged="ColorSourceComboBox_SelectionChanged">
+                                <ComboBoxItem Content="Windows Accent" Tag="Accent" />
+                                <ComboBoxItem Content="Custom Color" Tag="Custom" />
+                            </ComboBox>
+
+                            <controls:ColorPickerButton x:Name="WidgetBackgroundColorPicker" />
+                        </StackPanel>
+
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
+
+            <!--  graph appearance  -->
+            <controls:SettingsExpander
+                Description="Graph color and number of data points"
+                Header="Graph"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE9D2;}"
+                IsExpanded="False">
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Description="Accent or custom color" Header="Graph Color Source">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ComboBox
+                                x:Name="GraphColorSourceComboBox"
+                                Width="160"
+                                SelectionChanged="ColorSourceComboBox_SelectionChanged">
+                                <ComboBoxItem Content="Windows Accent" Tag="Accent" />
+                                <ComboBoxItem Content="Custom Color" Tag="Custom" />
+                            </ComboBox>
+
+                            <controls:ColorPickerButton x:Name="GraphColorPicker" />
+                        </StackPanel>
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Number of points shown on the graph" Header="Number of Data Points">
+                        <ComboBox
+                            x:Name="GraphDataPointsComboBox"
+                            Width="150"
+                            SelectionChanged="GraphDataPointsComboBox_SelectionChanged">
+                            <ComboBoxItem Content="80 Points" Tag="80" />
+                            <ComboBoxItem Content="90 Points" Tag="90" />
+                            <ComboBoxItem Content="100 Points" Tag="100" />
+                            <ComboBoxItem Content="110 Points" Tag="110" />
+                            <ComboBoxItem Content="120 Points" Tag="120" />
+                            <ComboBoxItem Content="130 Points" Tag="130" />
+                            <ComboBoxItem Content="140 Points" Tag="140" />
+                            <ComboBoxItem Content="150 Points" Tag="150" />
+                            <ComboBoxItem Content="200 Points" Tag="200" />
+                            <ComboBoxItem Content="300 Points" Tag="300" />
+                            <ComboBoxItem Content="400 Points" Tag="400" />
+                        </ComboBox>
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
+
+
+            <!--  backup and reset  -->
+            <TextBlock
+                Margin="1,20,0,6"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="Backup &amp; Reset" />
+
+            <controls:SettingsCard
+                Description="Backup or restore all settings, window positions, and sensor states (Import Restarts the app)"
+                Header="Export / Import Settings"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE74E;}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Click="ExportSettings_Click" Content="Export" />
+                    <Button Click="ImportSettings_Click" Content="Import" />
+                </StackPanel>
+            </controls:SettingsCard>
+
+            <controls:SettingsExpander
+                Description="Restore individual settings files to defaults (Restarts the app)"
+                Header="Reset to Defaults"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE777;}"
+                IsExpanded="False">
+
+                <Button Click="ResetAllSettings_Click" Content="Reset All" />
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Description="Theme, backdrop, update interval, graph appearance, tray behavior" Header="General Settings">
+                        <Button Click="ResetGeneralSettings_Click" Content="Reset" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Saved position and size of the dashboard and widget windows" Header="Window Positions">
+                        <Button Click="ResetWindowStates_Click" Content="Reset" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Per-sensor visibility, thresholds, graph scaling, and pinned selection" Header="Sensor States">
+                        <Button Click="ResetSensorStates_Click" Content="Reset" />
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
+
+
+            <!--  about section  -->
+            <TextBlock
+                Margin="1,20,0,6"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="About &amp; Open Source" />
+
+            <controls:SettingsExpander
+                Description="© 2026 Daniel Čech | All rights reserved"
+                Header="Fluent HwInfo"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE946;}">
+
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    IsTextSelectionEnabled="True"
+                    Text="Version 0.2.1" />
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Header="Developer Profile">
+                        <HyperlinkButton Content="Github" NavigateUri="https://github.com/cechout" />
+                    </controls:SettingsCard>
+                    <controls:SettingsCard Header="Project Repository">
+                        <HyperlinkButton Content="Github" NavigateUri="https://github.com/cechout/fluent-hwinfo" />
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
+
+            <controls:SettingsExpander
+                Description="Open source projects used in this app"
+                Header="Third-Party Libraries"
+                HeaderIcon="{toolkit:FontIcon Glyph=&#xE8F1;}">
+
+                <controls:SettingsExpander.Items>
+                    <controls:SettingsCard Header="Windows App SDK">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/microsoft/WindowsAppSDK" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="Windows Community Toolkit">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/CommunityToolkit/WindowsCommunityToolkit" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="WinUIEx">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/dotMorten/WinUIEx" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="LiveCharts2">
+                        <HyperlinkButton Content="Website" NavigateUri="https://livecharts.dev/" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="LibreHardwareMonitor">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/LibreHardwareMonitor/LibreHardwareMonitor" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Header="H.NotifyIcon">
+                        <HyperlinkButton Content="GitHub" NavigateUri="https://github.com/HavenDV/H.NotifyIcon" />
+                    </controls:SettingsCard>
+
+                </controls:SettingsExpander.Items>
+            </controls:SettingsExpander>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

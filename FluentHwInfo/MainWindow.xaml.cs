@@ -1,29 +1,21 @@
-using FluentHwInfo.Services;
-using FluentHwInfo.ViewModels;
-using FluentHwInfo.Views;
-using Microsoft.UI;
+using FluentHwInfo.Persistence.Services;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
-using Windows.UI.ApplicationSettings;
 using WinUIEx;
-using WindowState = FluentHwInfo.Models.WindowState;
+
+using FluentHwInfo.Core;
+using FluentHwInfo.Features.Settings;
+using FluentHwInfo.Features.Widget;
+using FluentHwInfo.Features.Sensors;
+
 
 namespace FluentHwInfo
 {
@@ -105,15 +97,15 @@ namespace FluentHwInfo
              }
 
             // theming
-            FluentHwInfo.Services.SettingsService.Instance.ThemeChanged += OnThemeChanged;
-            ApplyTitleBarTheme(FluentHwInfo.Services.SettingsService.Instance.AppTheme);
-            ApplyTrayIconTheme(FluentHwInfo.Services.SettingsService.Instance.AppTheme);
-            ApplyTheme(FluentHwInfo.Services.SettingsService.Instance.AppTheme);
+            SettingsService.Instance.ThemeChanged += OnThemeChanged;
+            ApplyTitleBarTheme(SettingsService.Instance.AppTheme);
+            ApplyTrayIconTheme(SettingsService.Instance.AppTheme);
+            ApplyTheme(SettingsService.Instance.AppTheme);
 
             // event routing
             this.Closed += (s, args) =>
             {
-                FluentHwInfo.Services.SettingsService.Instance.ThemeChanged -= OnThemeChanged;
+                SettingsService.Instance.ThemeChanged -= OnThemeChanged;
                 CurrentInstance = null;
             };
             ((FrameworkElement)this.Content).Loaded += MainWindow_Loaded;
@@ -138,7 +130,7 @@ namespace FluentHwInfo
                 SaveWindowState();
 
                 // same as EvaluateFullExit: stop the polling loop before tearing down the UI
-                FluentHwInfo.Services.HardwareMonitorService.Instance.StopMonitoring();
+                HardwareMonitorService.Instance.StopMonitoring();
 
                 PersistenceService.Instance.FlushAll();
                 Application.Current.Exit();
@@ -156,7 +148,7 @@ namespace FluentHwInfo
         }
         private async Task StartHardwareServiceAsync()
         {
-            var monitor = FluentHwInfo.Services.HardwareMonitorService.Instance;
+            var monitor = HardwareMonitorService.Instance;
 
             // scan motherboard
             LoadingStatusText.Text = "Initializing motherboard...";
@@ -184,7 +176,7 @@ namespace FluentHwInfo
 
             // we explicitly wait until the ViewModel has received and processed the very first data payload
             LoadingStatusText.Text = "Waiting for data...";
-            await FluentHwInfo.ViewModels.SensorsViewModel.Instance.WaitForInitialLoadAsync();
+            await SensorsViewModel.Instance.WaitForInitialLoadAsync();
 
             // now we are finished loading
             LoadingStatusText.Text = "Ready";
@@ -308,10 +300,10 @@ namespace FluentHwInfo
 
             // widget window is ready if it does not exist, is hidden, or is minimized
             bool isWidgetReady = true;
-            if (Views.WidgetWindow.CurrentInstance != null)
+            if (WidgetWindow.CurrentInstance != null)
             {
-                var opWidget = Views.WidgetWindow.CurrentInstance.AppWindow.Presenter as OverlappedPresenter;
-                isWidgetReady = !Views.WidgetWindow.CurrentInstance.AppWindow.IsVisible || (opWidget != null && opWidget.State == OverlappedPresenterState.Minimized);
+                var opWidget = WidgetWindow.CurrentInstance.AppWindow.Presenter as OverlappedPresenter;
+                isWidgetReady = !WidgetWindow.CurrentInstance.AppWindow.IsVisible || (opWidget != null && opWidget.State == OverlappedPresenterState.Minimized);
             }
 
             // if both windows are out of the way, hide the app completely from the taskbar
@@ -323,9 +315,9 @@ namespace FluentHwInfo
                     this.Hide();
                 }
 
-                if (Views.WidgetWindow.CurrentInstance != null)
+                if (WidgetWindow.CurrentInstance != null)
                 {
-                    Views.WidgetWindow.CurrentInstance.Hide();
+                    WidgetWindow.CurrentInstance.Hide();
                 }
             }
         }
@@ -354,7 +346,7 @@ namespace FluentHwInfo
             }
             else
             {
-                FluentHwInfo.Services.HardwareMonitorService.Instance.StopMonitoring();
+                HardwareMonitorService.Instance.StopMonitoring();
 
                 // MinimizeToTray is off: the window is actually about to close for real, capture its final rect and
                 // write everything to disk before the process ends
@@ -389,27 +381,27 @@ namespace FluentHwInfo
             }
 
             // always wake up the widget window if it exists
-            if (Views.WidgetWindow.CurrentInstance != null)
+            if (WidgetWindow.CurrentInstance != null)
             {
-                Views.WidgetWindow.CurrentInstance.Show();
-                if (Views.WidgetWindow.CurrentInstance.AppWindow.Presenter is OverlappedPresenter opWidget)
+                WidgetWindow.CurrentInstance.Show();
+                if (WidgetWindow.CurrentInstance.AppWindow.Presenter is OverlappedPresenter opWidget)
                 {
                     opWidget.Restore();
                 }
-                Views.WidgetWindow.CurrentInstance.Activate();
+                WidgetWindow.CurrentInstance.Activate();
             }
         }
         public void EvaluateFullExit()
         {
             // if the dashboard is closed and no widget is pinned anymore, nothing is left running;
             // fully exit instead of sitting in the tray forever with no way to bring it back
-            if (_isDashboardClosed && Views.WidgetWindow.CurrentInstance == null)
+            if (_isDashboardClosed && WidgetWindow.CurrentInstance == null)
             {
                 _isForceClosing = true;
 
                 // stop the background polling loop first, so no more sensor updates can hit UI elements while the XAML
                 // tree is being torn down below
-                FluentHwInfo.Services.HardwareMonitorService.Instance.StopMonitoring();
+                HardwareMonitorService.Instance.StopMonitoring();
 
                 PersistenceService.Instance.FlushAll();
                 Application.Current.Exit();
@@ -446,8 +438,8 @@ namespace FluentHwInfo
 
             // while maximized, keep the last known "restored" rect instead of overwriting it with
             // the maximized bounds, so un-maximizing later returns to the right size
-            var existing = WindowStateService.Instance.GetState(WindowKey) ?? new WindowState();
-            var newState = new WindowState
+            var existing = WindowStateService.Instance.GetState(WindowKey) ?? new Persistence.Models.WindowState();
+            var newState = new Persistence.Models.WindowState
             {
                 X = isMaximized ? existing.X : this.AppWindow.Position.X,
                 Y = isMaximized ? existing.Y : this.AppWindow.Position.Y,
@@ -469,7 +461,7 @@ namespace FluentHwInfo
             var pinnedSensors = FindSensorRowsByIds(widgetState.PinnedSensorIds);
             if (pinnedSensors.Count == 0) return; // none of them exist on this system anymore
 
-            var widgetWindow = new Views.WidgetWindow(pinnedSensors);
+            var widgetWindow = new WidgetWindow(pinnedSensors);
             widgetWindow.Activate();
         }
 

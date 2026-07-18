@@ -1,8 +1,9 @@
-﻿using FluentHwInfo.Services;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using System;
 using System.Diagnostics;
-using System.Linq;
+
+using FluentHwInfo.Persistence.Services;
+
 
 namespace FluentHwInfo
 {

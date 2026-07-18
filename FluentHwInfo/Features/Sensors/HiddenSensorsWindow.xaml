@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window
+    x:Class="FluentHwInfo.Features.Sensors.HiddenSensorsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fhControls="using:FluentHwInfo.Controls"
+    xmlns:fhSensors="using:FluentHwInfo.Features.Sensors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+
+        <!--  custom title bar  -->
+        <Grid
+            x:Name="CustomTitleBar"
+            Grid.Row="0"
+            Height="32"
+            Background="Transparent">
+
+            <TextBlock
+                Margin="16,0,0,0"
+                VerticalAlignment="Center"
+                Style="{ThemeResource CaptionTextBlockStyle}"
+                Text="Hidden Sensors" />
+        </Grid>
+
+
+        <!--  header: items header labels  -->
+        <Border Grid.Row="1" Background="Transparent">
+            <Grid HorizontalAlignment="Stretch">
+
+                <Grid Margin="32,8,32,12" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="140" />
+                        <ColumnDefinition Width="40" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        Grid.Column="0"
+                        Margin="36,0,0,0"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Sensor" />
+                    <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{ThemeResource CaptionTextBlockStyle}"
+                        Text="Unit" />
+                </Grid>
+
+                <Border
+                    Height="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Background="{ThemeResource DividerStrokeColorDefaultBrush}" />
+
+            </Grid>
+        </Border>
+
+
+        <!--  content: scrollviewer with all the cards of different hardware groups with the hidden sensors  -->
+        <!--  (same layout as the main sensor list on SensorsPage)  -->
+        <ScrollViewer
+            Grid.Row="2"
+            Padding="16,0,16,0"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+
+            <ItemsControl Margin="0,0,0,16" ItemsSource="{x:Bind ViewModel.HardwareGroups, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="fhSensors:HardwareGroupViewModel">
+
+                        <!--  settings expander (containing all the sensors for one hardware group)  -->
+                        <controls:SettingsExpander
+                            Margin="0,16,0,0"
+                            Header="{x:Bind HardwareName, Mode=OneWay}"
+                            IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}"
+                            Visibility="{x:Bind HiddenPanelVisibility, Mode=OneWay}">
+
+                            <!--  header  -->
+                            <controls:SettingsExpander.ItemsHeader>
+                                <StackPanel>
+                                    <Border Padding="16,12,16,8" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                                        <Grid HorizontalAlignment="Stretch">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" MinWidth="140" />
+                                                <ColumnDefinition Width="40" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Margin="36,0,0,0"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="Sensor" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                HorizontalAlignment="Right"
+                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="Unit" />
+                                        </Grid>
+                                    </Border>
+
+                                    <!--  items  -->
+                                    <!--
+                                        note: SettingsExpander.Items/ItemsSource is intentionally left unset here
+                                        communityToolkits SettingsExpander applies an internal style with
+                                        TargetType="SettingsCard" to every item it materializes that way; a non-SettingsCard
+                                        item throws a native exception that WinUI escalates to a fatal crash of the entire
+                                        process (invisible with a debugger attached)
+                                        see SensorsPage.xaml for the alternative fix wrapping each item in an actual
+                                        SettingsCard
+                                        workaround here: a plain ItemsControl nested inside ItemsHeader instead, which never
+                                        goes through SettingsExpanders own item-styling logic
+                                    -->
+                                    <ItemsControl ItemsSource="{x:Bind HiddenSensors, Mode=OneWay}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="fhSensors:SensorRowViewModel">
+                                                <fhControls:SensorCardControl
+                                                    HorizontalAlignment="Stretch"
+                                                    IsCompact="True"
+                                                    ViewModel="{x:Bind}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </controls:SettingsExpander.ItemsHeader>
+
+                        </controls:SettingsExpander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+
+        <!--  bottom bar with the restore action  -->
+        <Border
+            Grid.Row="3"
+            Padding="16,12,16,12"
+            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+
+            <Button
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Center"
+                Click="RestoreSelected_Click"
+                Content="Restore Selected" />
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<UserControl
+    x:Class="FluentHwInfo.Controls.SensorCardControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fhControls="using:FluentHwInfo.Controls"
+    xmlns:fhSensors="using:FluentHwInfo.Features.Sensors"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:CommunityToolkit.WinUI"
+    HorizontalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+
+                <ResourceDictionary x:Key="Default">
+                    <SolidColorBrush x:Key="CustomCheckedBackgroundBrush" Color="#19FFFFFF" />
+                    <SolidColorBrush x:Key="CustomCheckedHoverBrush" Color="#14FFFFFF" />
+                </ResourceDictionary>
+
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="CustomCheckedBackgroundBrush" Color="#FFF8F8F8" />
+                    <SolidColorBrush x:Key="CustomCheckedHoverBrush" Color="#FFFAFAFA" />
+                </ResourceDictionary>
+
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid
+        x:Name="RootGrid"
+        HorizontalAlignment="Stretch"
+        Background="Transparent"
+        PointerEntered="RootGrid_PointerEntered"
+        PointerExited="RootGrid_PointerExited"
+        PointerPressed="RootGrid_PointerPressed"
+        PointerReleased="RootGrid_PointerReleased"
+        Tapped="RootGrid_Tapped">
+        <!--  border to control color and height of spacing between each item  -->
+        <Border
+            x:Name="CardBackground"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            CornerRadius="0" />
+
+        <Grid
+            x:Name="CardContent"
+            Padding="16,2,16,2"
+            HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    x:Name="NameColumn"
+                    Width="2*"
+                    MinWidth="140" />
+                <ColumnDefinition
+                    x:Name="CurrentColumn"
+                    Width="*"
+                    MinWidth="65" />
+                <ColumnDefinition
+                    x:Name="MinimumColumn"
+                    Width="*"
+                    MinWidth="65" />
+                <ColumnDefinition
+                    x:Name="MaximumColumn"
+                    Width="*"
+                    MinWidth="65" />
+                <ColumnDefinition
+                    x:Name="AverageColumn"
+                    Width="*"
+                    MinWidth="65" />
+                <ColumnDefinition
+                    x:Name="UnitColumn"
+                    Width="0"
+                    MinWidth="0" />
+            </Grid.ColumnDefinitions>
+
+            <!--  checkbox with sensor name  -->
+            <StackPanel
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Orientation="Horizontal"
+                Spacing="8">
+
+                <CheckBox
+                    MinWidth="0"
+                    IsChecked="{x:Bind ViewModel.IsSelected, Mode=OneWay}"
+                    IsHitTestVisible="False" />
+
+                <TextBlock
+                    VerticalAlignment="Center"
+                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    Text="{x:Bind ViewModel.Name, Mode=OneWay}" />
+            </StackPanel>
+
+            <!--  current value  -->
+            <TextBlock
+                x:Name="CurrentValueText"
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontWeight="Normal"
+                Foreground="{x:Bind ViewModel.CurrentValueColor, Mode=OneWay}"
+                Style="{ThemeResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.CurrentValue, Mode=OneWay}" />
+
+            <!--  minimum value  -->
+            <TextBlock
+                x:Name="MinimumValueText"
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontWeight="Normal"
+                Foreground="{x:Bind ViewModel.MinimumValueColor, Mode=OneWay}"
+                Style="{ThemeResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.MinimumValue, Mode=OneWay}" />
+
+            <!--  maximum value  -->
+            <TextBlock
+                x:Name="MaximumValueText"
+                Grid.Column="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontWeight="Normal"
+                Foreground="{x:Bind ViewModel.MaximumValueColor, Mode=OneWay}"
+                Style="{ThemeResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.MaximumValue, Mode=OneWay}" />
+
+            <!--  average value  -->
+            <TextBlock
+                x:Name="AverageValueText"
+                Grid.Column="4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontWeight="Normal"
+                Foreground="{x:Bind ViewModel.AverageValueColor, Mode=OneWay}"
+                Style="{ThemeResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.AverageValue, Mode=OneWay}" />
+
+            <!--  unit, only visible in compact mode (to disambiguate sensors that share the exact same name)  -->
+            <TextBlock
+                x:Name="UnitText"
+                Grid.Column="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Style="{ThemeResource CaptionTextBlockStyle}"
+                Text="{x:Bind ViewModel.Unit, Mode=OneWay}"
+                Visibility="Collapsed" />
+        </Grid>
+
+
+        <!--  custom visual states  -->
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="CardStates">
+
+                <!--  normal state  -->
+                <VisualState x:Name="Normal">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Hover">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorSecondaryBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorTertiaryBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="0.7" />
+                    </VisualState.Setters>
+                </VisualState>
+
+                <!--  checked state  -->
+                <VisualState x:Name="Checked">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource CustomCheckedBackgroundBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedHover">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource CustomCheckedHoverBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="1.0" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="CheckedPressed">
+                    <VisualState.Setters>
+                        <Setter Target="CardBackground.Background" Value="{ThemeResource ControlFillColorDefaultBrush}" />
+                        <Setter Target="CardContent.Opacity" Value="0.7" />
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+
+
+            <!--  independent from CardStates  -->
+            <!--  controls whether the card is fully live, frozen/disabled, or name-only (hidden window)  -->
+            <!--  column collapsing for name-only happens in code-behind, not here  -->
+            <VisualStateGroup x:Name="DisplayStates">
+                <VisualState x:Name="FullDetails" />
+
+                <!--  sensor is disabled but not fully hidden, values are frozen, card ignores clicks/hover  -->
+                <VisualState x:Name="Disabled">
+                    <VisualState.Setters>
+                        <Setter Target="CardContent.Opacity" Value="0.5" />
+                    </VisualState.Setters>
+                </VisualState>
+
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>
