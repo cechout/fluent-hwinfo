@@ -28,7 +28,7 @@
                 Text="General Settings" />
 
             <controls:SettingsCard
-                Description="Select your preferred color mode for the application"
+                Description="Light, dark, or match Windows"
                 Header="App Theme"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE790;}">
                 <ComboBox
@@ -43,7 +43,7 @@
 
             <!--  engine settings  -->
             <controls:SettingsCard
-                Description="How fast the hardware sensors should be polled"
+                Description="How often sensors are polled"
                 Header="Update Interval"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE916;}">
                 <ComboBox
@@ -60,7 +60,7 @@
 
             <!--  behavior settings  -->
             <controls:SettingsCard
-                Description="Hide the app to the system tray when all windows are minimized"
+                Description="Hide app to system tray when all windows are minimized"
                 Header="Minimize to System Tray"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE744;}">
                 <ToggleSwitch
@@ -79,7 +79,7 @@
 
             <!--  background material  -->
             <controls:SettingsExpander
-                Description="Choose the transparency effect and color for the widget window."
+                Description="Backdrop effect and color for the widget"
                 Header="Background Material"
                 HeaderIcon="{ui:FontIcon Glyph=&#xEF1F;}"
                 IsExpanded="False">
@@ -94,7 +94,7 @@
                 </ComboBox>
 
                 <controls:SettingsExpander.Items>
-                    <controls:SettingsCard Description="Adjust the color transparency (Acrylic only)." Header="Tint Opacity">
+                    <controls:SettingsCard Description="Tint strength (Acrylic only)" Header="Tint Opacity">
                         <Slider
                             x:Name="TintSlider"
                             Width="200"
@@ -105,7 +105,7 @@
                             ValueChanged="TintSlider_ValueChanged" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Adjust the brightness transparency (Acrylic only)." Header="Luminosity Opacity">
+                    <controls:SettingsCard Description="Brightness, independent of tint color (Acrylic only)" Header="Luminosity Opacity">
                         <Slider
                             x:Name="LuminositySlider"
                             Width="200"
@@ -116,118 +116,105 @@
                             ValueChanged="LuminositySlider_ValueChanged" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Choose between the Windows accent color or a custom color." Header="Background Color Source">
-                        <ComboBox
-                            x:Name="ColorSourceComboBox"
-                            Width="160"
-                            SelectionChanged="ColorSourceComboBox_SelectionChanged">
-                            <ComboBoxItem Content="Windows Accent" Tag="Accent" />
-                            <ComboBoxItem Content="Custom Color" Tag="Custom" />
-                        </ComboBox>
-                    </controls:SettingsCard>
+                    <controls:SettingsCard Description="Accent or custom color (Acrylic and Mica)" Header="Background Color Source">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ComboBox
+                                x:Name="ColorSourceComboBox"
+                                Width="160"
+                                SelectionChanged="ColorSourceComboBox_SelectionChanged">
+                                <ComboBoxItem Content="Windows Accent" Tag="Accent" />
+                                <ComboBoxItem Content="Custom Color" Tag="Custom" />
+                            </ComboBox>
 
-                    <controls:SettingsCard Description="Select the custom color for the background." Header="Custom Background Color">
-                        <controls:ColorPickerButton x:Name="WidgetBackgroundColorPicker" />
+                            <controls:ColorPickerButton x:Name="WidgetBackgroundColorPicker" />
+                        </StackPanel>
+
                     </controls:SettingsCard>
                 </controls:SettingsExpander.Items>
             </controls:SettingsExpander>
 
-            <!--  graph fill color setting  -->
+            <!--  graph appearance  -->
             <controls:SettingsExpander
-                Description="Choose the color source for the LiveChart graph."
-                Header="Graph Fill Color"
-                HeaderIcon="{ui:FontIcon Glyph=&#xE790;}"
+                Description="Graph color and number of data points"
+                Header="Graph"
+                HeaderIcon="{ui:FontIcon Glyph=&#xE9D2;}"
                 IsExpanded="False">
 
-                <ComboBox
-                    x:Name="GraphColorSourceComboBox"
-                    Width="160"
-                    SelectionChanged="GraphColorSourceComboBox_SelectionChanged">
-                    <ComboBoxItem Content="Windows Accent" Tag="Accent" />
-                    <ComboBoxItem Content="Custom Color" Tag="Custom" />
-                </ComboBox>
-
                 <controls:SettingsExpander.Items>
-                    <controls:SettingsCard Description="Select the custom fill color for the graph." Header="Custom Graph Color">
-                        <controls:ColorPickerButton x:Name="GraphColorPicker" />
+                    <controls:SettingsCard Description="Accent or custom color" Header="Graph Color Source">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <ComboBox
+                                x:Name="GraphColorSourceComboBox"
+                                Width="160"
+                                SelectionChanged="ColorSourceComboBox_SelectionChanged">
+                                <ComboBoxItem Content="Windows Accent" Tag="Accent" />
+                                <ComboBoxItem Content="Custom Color" Tag="Custom" />
+                            </ComboBox>
+
+                            <controls:ColorPickerButton x:Name="GraphColorPicker" />
+                        </StackPanel>
+                    </controls:SettingsCard>
+
+                    <controls:SettingsCard Description="Number of points shown on the graph" Header="Number of Data Points">
+                        <ComboBox
+                            x:Name="GraphDataPointsComboBox"
+                            Width="150"
+                            SelectionChanged="GraphDataPointsComboBox_SelectionChanged">
+                            <ComboBoxItem Content="80 Points" Tag="80" />
+                            <ComboBoxItem Content="90 Points" Tag="90" />
+                            <ComboBoxItem Content="100 Points" Tag="100" />
+                            <ComboBoxItem Content="110 Points" Tag="110" />
+                            <ComboBoxItem Content="120 Points" Tag="120" />
+                            <ComboBoxItem Content="130 Points" Tag="130" />
+                            <ComboBoxItem Content="140 Points" Tag="140" />
+                            <ComboBoxItem Content="150 Points" Tag="150" />
+                            <ComboBoxItem Content="200 Points" Tag="200" />
+                            <ComboBoxItem Content="300 Points" Tag="300" />
+                            <ComboBoxItem Content="400 Points" Tag="400" />
+                        </ComboBox>
                     </controls:SettingsCard>
                 </controls:SettingsExpander.Items>
             </controls:SettingsExpander>
 
-            <!--  number of graph points  -->
-            <controls:SettingsCard
-                Description="How many data points should be displayed in the widget graph"
-                Header="Number of Graph Data Points"
-                HeaderIcon="{ui:FontIcon Glyph=&#xE9D2;}">
-                <ComboBox
-                    x:Name="GraphDataPointsComboBox"
-                    Width="150"
-                    SelectionChanged="GraphDataPointsComboBox_SelectionChanged">
-                    <ComboBoxItem Content="80 Points" Tag="80" />
-                    <ComboBoxItem Content="90 Points" Tag="90" />
-                    <ComboBoxItem Content="100 Points" Tag="100" />
-                    <ComboBoxItem Content="110 Points" Tag="110" />
-                    <ComboBoxItem Content="120 Points" Tag="120" />
-                    <ComboBoxItem Content="130 Points" Tag="130" />
-                    <ComboBoxItem Content="140 Points" Tag="140" />
-                    <ComboBoxItem Content="150 Points" Tag="150" />
-                    <ComboBoxItem Content="160 Points" Tag="160" />
-                </ComboBox>
-            </controls:SettingsCard>
 
-
-            <!--  reset settings  -->
+            <!--  backup and reset  -->
             <TextBlock
                 Margin="1,20,0,6"
                 Style="{StaticResource BodyStrongTextBlockStyle}"
-                Text="Reset" />
+                Text="Backup &amp; Reset" />
+
+            <controls:SettingsCard
+                Description="Backup or restore all settings, window positions, and sensor states (Import Restarts the app)"
+                Header="Export / Import Settings"
+                HeaderIcon="{ui:FontIcon Glyph=&#xE74E;}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Click="ExportSettings_Click" Content="Export" />
+                    <Button Click="ImportSettings_Click" Content="Import" />
+                </StackPanel>
+            </controls:SettingsCard>
 
             <controls:SettingsExpander
-                Description="Restore individual persisted state files to their defaults. The app will restart after confirmation."
+                Description="Restore individual settings files to defaults (Restarts the app)"
                 Header="Reset to Defaults"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE777;}"
                 IsExpanded="False">
 
-                <Button
-                    Click="ResetAllSettings_Click"
-                    Content="Reset All"
-                    Style="{StaticResource AccentButtonStyle}" />
+                <Button Click="ResetAllSettings_Click" Content="Reset All" />
 
                 <controls:SettingsExpander.Items>
-                    <controls:SettingsCard Description="Theme, backdrop, update interval, graph appearance, tray behavior." Header="General Settings">
+                    <controls:SettingsCard Description="Theme, backdrop, update interval, graph appearance, tray behavior" Header="General Settings">
                         <Button Click="ResetGeneralSettings_Click" Content="Reset" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Saved position and size of the dashboard and widget windows." Header="Window Positions">
+                    <controls:SettingsCard Description="Saved position and size of the dashboard and widget windows" Header="Window Positions">
                         <Button Click="ResetWindowStates_Click" Content="Reset" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Per-sensor visibility, thresholds, graph scaling, and pinned selection." Header="Sensor States">
+                    <controls:SettingsCard Description="Per-sensor visibility, thresholds, graph scaling, and pinned selection" Header="Sensor States">
                         <Button Click="ResetSensorStates_Click" Content="Reset" />
                     </controls:SettingsCard>
                 </controls:SettingsExpander.Items>
             </controls:SettingsExpander>
-
-
-            <!--  backup and restore  -->
-            <TextBlock
-                Margin="1,20,0,6"
-                Style="{StaticResource BodyStrongTextBlockStyle}"
-                Text="Backup &amp; Restore" />
-
-            <controls:SettingsCard
-                Description="Save all current settings, window positions, and sensor states to a single file."
-                Header="Export Settings"
-                HeaderIcon="{ui:FontIcon Glyph=&#xE74E;}">
-                <Button Click="ExportSettings_Click" Content="Export" />
-            </controls:SettingsCard>
-
-            <controls:SettingsCard
-                Description="Restore settings from a previously exported file. This overwrites all current settings and restarts the app."
-                Header="Import Settings"
-                HeaderIcon="{ui:FontIcon Glyph=&#xE8B5;}">
-                <Button Click="ImportSettings_Click" Content="Import" />
-            </controls:SettingsCard>
 
 
             <!--  about section  -->
@@ -237,7 +224,7 @@
                 Text="About &amp; Open Source" />
 
             <controls:SettingsExpander
-                Description="© 2026 Daniel Čech. All rights reserved."
+                Description="© 2026 Daniel Čech | All rights reserved"
                 Header="Fluent HwInfo"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE946;}">
 
@@ -257,7 +244,7 @@
             </controls:SettingsExpander>
 
             <controls:SettingsExpander
-                Description="This application is built using the following open source projects."
+                Description="Open source projects used in this app"
                 Header="Third-Party Libraries"
                 HeaderIcon="{ui:FontIcon Glyph=&#xE8F1;}">
 
