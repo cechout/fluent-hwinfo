@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 
 
 namespace FluentHwInfo.Controls
@@ -65,12 +66,17 @@ namespace FluentHwInfo.Controls
             double labelY = LabelFollowsPointer ? position.Y : valuePixels.Y;
             CurrentValueLabelText.Text = value.Value.ToString("0.0");
 
-            double approxHoverLabelWidth = CurrentValueLabelBorder.Width;
+            // force a synchronous re-measure so DesiredSize reflects the new text width
+            // immediately - without this, ActualWidth would still hold last frame's
+            // value and the flip calculation below would be one tick behind
+            CurrentValueLabelBorder.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            double labelWidth = CurrentValueLabelBorder.DesiredSize.Width;
+
             const double hoverLabelGap = 6; // horizontal gap between pointer and label
 
-            bool flipLeft = position.X + hoverLabelGap + approxHoverLabelWidth > Chart.ActualWidth;
+            bool flipLeft = position.X + hoverLabelGap + labelWidth > Chart.ActualWidth;
             double labelX = flipLeft
-                ? position.X - hoverLabelGap - approxHoverLabelWidth
+                ? position.X - hoverLabelGap - labelWidth
                 : position.X + hoverLabelGap;
 
             Canvas.SetLeft(CurrentValueLabelBorder, labelX);

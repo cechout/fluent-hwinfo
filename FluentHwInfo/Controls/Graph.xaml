@@ -49,7 +49,6 @@
 
                 <Border
                     x:Name="CurrentValueLabelBorder"
-                    Width="32"
                     Padding="4,2"
                     CornerRadius="3"
                     Visibility="Collapsed">
@@ -62,7 +61,6 @@
 
                 <Border
                     x:Name="ThresholdValueLabelBorder"
-                    Width="32"
                     Padding="4,2"
                     CornerRadius="3"
                     Visibility="Collapsed">

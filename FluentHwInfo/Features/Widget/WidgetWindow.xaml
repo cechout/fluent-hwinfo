@@ -88,7 +88,7 @@
 
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="36" />
-                                        <ColumnDefinition Width="36" />
+                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
 
@@ -113,6 +113,7 @@
                                     <!--  current max y-axis value  -->
                                     <TextBlock
                                         Grid.Column="1"
+                                        Margin="1,0,10,0"
                                         Padding="0,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
