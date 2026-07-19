@@ -1,4 +1,3 @@
-using FluentHwInfo.Persistence.Services;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,10 +10,12 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using WinUIEx;
 
+using FluentHwInfo.Common;
 using FluentHwInfo.Core;
 using FluentHwInfo.Features.Settings;
 using FluentHwInfo.Features.Widget;
 using FluentHwInfo.Features.Sensors;
+using FluentHwInfo.Persistence.Services;
 
 
 namespace FluentHwInfo

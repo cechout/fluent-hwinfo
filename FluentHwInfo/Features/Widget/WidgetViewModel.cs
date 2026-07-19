@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 
 using FluentHwInfo.Common;
-using FluentHwInfo.Features.Sensors;
 using FluentHwInfo.Core;
 
 

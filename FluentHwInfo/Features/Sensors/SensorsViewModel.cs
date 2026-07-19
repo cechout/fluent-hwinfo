@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FluentHwInfo.Features.Widget;
 using FluentHwInfo.Persistence.Services;
 using FluentHwInfo.Core;
+using FluentHwInfo.Common;
 
 
 namespace FluentHwInfo.Features.Sensors

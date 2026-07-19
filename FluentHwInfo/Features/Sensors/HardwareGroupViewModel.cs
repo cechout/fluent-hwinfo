@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 
 using FluentHwInfo.Persistence.Services;
 using FluentHwInfo.Core;
+using FluentHwInfo.Common;
 
 
 namespace FluentHwInfo.Features.Sensors

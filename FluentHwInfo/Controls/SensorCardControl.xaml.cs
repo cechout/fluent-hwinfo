@@ -1,8 +1,10 @@
 using System.ComponentModel;
-using FluentHwInfo.Features.Sensors;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+
+using FluentHwInfo.Common;
+
 
 namespace FluentHwInfo.Controls
 {

@@ -1,16 +1,14 @@
-﻿using Microsoft.UI.Dispatching;
+﻿using FluentHwInfo.Controls;
+using FluentHwInfo.Persistence.Models;
+using FluentHwInfo.Persistence.Services;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-using FluentHwInfo.Common;
-using FluentHwInfo.Controls;
-using FluentHwInfo.Persistence.Models;
-using FluentHwInfo.Persistence.Services;
 
-
-namespace FluentHwInfo.Features.Sensors
+namespace FluentHwInfo.Common
 {
     public class SensorRowViewModel : INotifyPropertyChanged
     {
@@ -212,7 +210,7 @@ namespace FluentHwInfo.Features.Sensors
 
             _sum += newValue;
             _count++;
-            _currentRaw = newValue; 
+            _currentRaw = newValue;
             _avg = _sum / _count;
 
             // build strings for the UI with the dynamic unit

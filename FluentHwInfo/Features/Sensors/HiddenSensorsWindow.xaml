@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fhCommon="using:FluentHwInfo.Common"
     xmlns:fhControls="using:FluentHwInfo.Controls"
     xmlns:fhSensors="using:FluentHwInfo.Features.Sensors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -126,7 +127,7 @@
                                     -->
                                     <ItemsControl ItemsSource="{x:Bind HiddenSensors, Mode=OneWay}">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="fhSensors:SensorRowViewModel">
+                                            <DataTemplate x:DataType="fhCommon:SensorRowViewModel">
                                                 <fhControls:SensorCardControl
                                                     HorizontalAlignment="Stretch"
                                                     IsCompact="True"

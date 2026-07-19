@@ -12,6 +12,7 @@ using System.Linq;
 using FluentHwInfo.Persistence.Services;
 using FluentHwInfo.Persistence.Models;
 using FluentHwInfo.Features.Sensors;
+using FluentHwInfo.Common;
 
 
 namespace FluentHwInfo.Features.Widget

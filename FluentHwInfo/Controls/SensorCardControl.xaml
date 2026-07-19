@@ -15,8 +15,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <fhCommon:NullToUnsetValueConverter x:Key="NullToUnsetValueConverter" />
-
             <ResourceDictionary.ThemeDictionaries>
 
                 <ResourceDictionary x:Key="Default">
