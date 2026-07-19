@@ -4,7 +4,7 @@
 ###
 Reading hardware sensors often results in cluttered and old-looking interfaces. This project aims to change that. 
 
-Fluent HwInfo is a hardware monitoring application built with **WinUI 3**. The goal is to display deep system diagnostics (like CPU, GPU, RAM, and thermals) in a clean, native Windows 11 user interface.
+Fluent Sensors is a hardware monitoring application built with **WinUI 3**. The goal is to display deep system diagnostics (like CPU, GPU, RAM, and thermals) in a clean, native Windows 11 user interface.
 
 ## ⚙️ Under the Hood
 The app is built with a straightforward architecture and native Windows 11 integration in mind.
@@ -26,13 +26,13 @@ Before opening the solution, make sure you have the following workloads installe
 
 ### 2. Clone the Repository
 ```ps
-git clone https://github.com/cechout/fluent-hwinfo.git
+git clone https://github.com/cechout/fluent-sensors.git
 ```
 
 ### 3. Build and Run
 * Open the solution file in Visual Studio.
 * Right-click on the Solution in the Solution Explorer and select **Restore NuGet Packages** (Visual Studio usually does this automatically on the first build).
-* Right-click on the `FluentHwInfo` project in the Solution Explorer and select `Set as Startup Project`.
+* Right-click on the `FluentSensors` project in the Solution Explorer and select `Set as Startup Project`.
 * In the top toolbar, change the Solution Platform from `Any CPU` to your specific system architecture (e.g., `x64`). *Note: WinUI 3 projects do not support 'Any CPU' builds.*
 * Press `F5` to build and run the application.
 
