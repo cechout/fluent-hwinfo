@@ -26,10 +26,10 @@
         // realistic value
         private static readonly SensorTypeProfile Clock = new()
         {
-            ThresholdDefault = 3000,
+            ThresholdDefault = 2000,
             ThresholdStep = 100,
-            YMaxDefault = 5000,
-            YMaxStep = 250
+            YMaxDefault = 3000,
+            YMaxStep = 100
         };
 
         // cumulative read/written data over uptime, can climb into the hundreds of GB
@@ -56,7 +56,7 @@
             ThresholdDefault = 2000,
             ThresholdStep = 100,
             YMaxDefault = 3000,
-            YMaxStep = 250
+            YMaxStep = 100
         };
 
         // compromise profile: this sensor type spans both cpu core voltage (~0.8-1.5V) and psu rails (3.3V/5V/12V)
@@ -66,7 +66,7 @@
             ThresholdDefault = 1.5,
             ThresholdStep = 0.1,
             YMaxDefault = 2.0,
-            YMaxStep = 0.2
+            YMaxStep = 0.1
         };
 
         // sensorType is the raw LibreHardwareMonitor SensorType.ToString() value (e.g. "Clock", "Load")
