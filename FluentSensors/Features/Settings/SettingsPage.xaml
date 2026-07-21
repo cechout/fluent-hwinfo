@@ -184,7 +184,7 @@
                 Text="Backup &amp; Reset" />
 
             <controls:SettingsCard
-                Description="Backup or restore all settings, window positions, and sensor states (Import Restarts the app)"
+                Description="Backup or restore all settings (Import Restarts the app)"
                 Header="Export / Import Settings"
                 HeaderIcon="{toolkit:FontIcon Glyph=&#xE74E;}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -206,11 +206,11 @@
                         <Button Click="ResetGeneralSettings_Click" Content="Reset" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Saved position and size of the dashboard and widget windows" Header="Window Positions">
+                    <controls:SettingsCard Description="Position and size of all windows" Header="Window States">
                         <Button Click="ResetWindowStates_Click" Content="Reset" />
                     </controls:SettingsCard>
 
-                    <controls:SettingsCard Description="Per-sensor visibility, thresholds, graph scaling, and pinned selection" Header="Sensor States">
+                    <controls:SettingsCard Description="Per-sensor visibility, thresholds, graph scaling, pinned selection" Header="Sensor States">
                         <Button Click="ResetSensorStates_Click" Content="Reset" />
                     </controls:SettingsCard>
                 </controls:SettingsExpander.Items>

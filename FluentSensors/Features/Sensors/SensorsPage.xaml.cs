@@ -26,6 +26,7 @@ namespace FluentSensors.Features.Sensors
         // command bar overflow handling fields
         private ICommandBarElement[] _commandBarPriorityOrder;
         private readonly Dictionary<ICommandBarElement, double> _commandBarButtonWidths = new();
+        private HashSet<ICommandBarElement> _forcedOverflowElements;
         private bool _commandBarWidthsCached = false;
         private const double OverflowButtonReservedWidth = 48;
         private const double HeaderSpacingBuffer = 100;
@@ -244,6 +245,12 @@ namespace FluentSensors.Features.Sensors
                 //DeselectAllButton
             };
 
+            // elements in here always in the overflow menu
+            _forcedOverflowElements = new HashSet<ICommandBarElement>
+            {
+                ShowHiddenSensorsButton
+            };
+
             _commandBarOverflowStartIndex = -1;
             CacheCommandBarButtonWidths();
             UpdateCommandBarOverflow();
@@ -280,22 +287,31 @@ namespace FluentSensors.Features.Sensors
         private void UpdateCommandBarOverflow()
         {
             double availableWidth = SensorListHeaderGrid.ActualWidth - SensorListTitleText.ActualWidth - HeaderSpacingBuffer;
-            double totalWidth = _commandBarPriorityOrder.Sum(button => _commandBarButtonWidths[button]);
 
-            double budget = totalWidth <= availableWidth
-                ? availableWidth
-                : availableWidth - OverflowButtonReservedWidth;
+            // only elements not permanently pinned to overflow take part in the width fit
+            var fittableElements = _commandBarPriorityOrder
+                .Where(element => !_forcedOverflowElements.Contains(element))
+                .ToArray();
+
+            double totalWidth = fittableElements.Sum(button => _commandBarButtonWidths[button]);
+
+            // overflow button is needed if the fittable elements alone overflow,
+            // or if theres at least one forced element that needs it regardless
+            bool needsOverflowButton = totalWidth > availableWidth || _forcedOverflowElements.Count > 0;
+            double budget = needsOverflowButton
+                ? availableWidth - OverflowButtonReservedWidth
+                : availableWidth;
 
             double runningWidth = 0;
-            int overflowStartIndex = _commandBarPriorityOrder.Length;
+            int fittableOverflowStartIndex = fittableElements.Length;
 
-            for (int i = 0; i < _commandBarPriorityOrder.Length; i++)
+            for (int i = 0; i < fittableElements.Length; i++)
             {
-                double buttonWidth = _commandBarButtonWidths[_commandBarPriorityOrder[i]];
+                double buttonWidth = _commandBarButtonWidths[fittableElements[i]];
 
                 if (runningWidth + buttonWidth > budget)
                 {
-                    overflowStartIndex = i;
+                    fittableOverflowStartIndex = i;
                     break;
                 }
 
@@ -304,25 +320,34 @@ namespace FluentSensors.Features.Sensors
 
             // nothing changed since the last check: skip rebuilding
             // (stops flickering when resizing)
-            if (overflowStartIndex == _commandBarOverflowStartIndex)
+            if (fittableOverflowStartIndex == _commandBarOverflowStartIndex)
             {
                 return;
             }
 
-            _commandBarOverflowStartIndex = overflowStartIndex;
+            _commandBarOverflowStartIndex = fittableOverflowStartIndex;
 
             SensorListCommandBar.PrimaryCommands.Clear();
             SensorListCommandBar.SecondaryCommands.Clear();
 
-            for (int i = 0; i < _commandBarPriorityOrder.Length; i++)
+            for (int i = 0; i < fittableElements.Length; i++)
             {
-                if (i < overflowStartIndex)
+                if (i < fittableOverflowStartIndex)
                 {
-                    SensorListCommandBar.PrimaryCommands.Add(_commandBarPriorityOrder[i]);
+                    SensorListCommandBar.PrimaryCommands.Add(fittableElements[i]);
                 }
                 else
                 {
-                    SensorListCommandBar.SecondaryCommands.Add(_commandBarPriorityOrder[i]);
+                    SensorListCommandBar.SecondaryCommands.Add(fittableElements[i]);
+                }
+            }
+
+            // forced elements always land in the overflow menu, appended at the end
+            foreach (var element in _commandBarPriorityOrder)
+            {
+                if (_forcedOverflowElements.Contains(element))
+                {
+                    SensorListCommandBar.SecondaryCommands.Add(element);
                 }
             }
         }
