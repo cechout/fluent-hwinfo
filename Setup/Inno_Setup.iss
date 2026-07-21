@@ -2,10 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 ; Non-commercial use only
 
-#define MyAppName "Fluent HwInfo"
-#define MyAppVersion "0.2.1"
+#define MyAppName "Fluent Sensors"
+#define MyAppVersion "0.3.0"
 #define MyAppPublisher "Daniel Čech"
-#define MyAppExeName "FluentHwInfo.exe"
+#define MyAppExeName "FluentSensors.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -30,8 +30,8 @@ LicenseFile=..\LICENSE.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=.\Output
-OutputBaseFilename=FluentHwInfo_Installer
-SetupIconFile=..\FluentHwInfo\Assets\Icon\Icon.ico
+OutputBaseFilename=FluentSensors_Installer
+SetupIconFile=..\FluentSensors\Assets\Icon\Icon.ico
 SolidCompression=yes
 WizardStyle=modern dynamic
 
@@ -42,8 +42,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\FluentHwInfo\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\FluentHwInfo\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\FluentSensors\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\FluentSensors\bin\x64\Release\net10.0-windows10.0.19041.0\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
