@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net.NetworkInformation;
 
 namespace FluentSensors.Core
 {
@@ -197,30 +198,36 @@ namespace FluentSensors.Core
         private async Task LoopAsync(CancellationToken token)
         {
             // TEMP
+            System.Diagnostics.Debug.WriteLine("=== Active (Up) .NET NetworkInterfaces + IP check ===");
+            foreach (var nic in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (nic.OperationalStatus != System.Net.NetworkInformation.OperationalStatus.Up) continue;
+
+                int addressCount = nic.GetIPProperties().UnicastAddresses.Count;
+                System.Diagnostics.Debug.WriteLine(
+                    $"[.NET] Name='{nic.Name}' | UnicastAddresses={addressCount} | Type={nic.NetworkInterfaceType}");
+            }
+
+
             while (!token.IsCancellationRequested)
             {
-                System.Diagnostics.Debug.WriteLine("=== LHM Network Hardware ===");
-                foreach (var hw in _computer.Hardware)
-                {
-                    if (hw.HardwareType == HardwareType.Network)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[LHM] Name='{hw.Name}'");
-                    }
-                }
-                System.Diagnostics.Debug.WriteLine("=== .NET NetworkInterfaces ===");
-                foreach (var nic in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
-                {
-                    System.Diagnostics.Debug.WriteLine(
-                        $"[.NET] Name='{nic.Name}' | Description='{nic.Description}' | Status={nic.OperationalStatus} | Type={nic.NetworkInterfaceType}");
-                }
-
-
-
                 // update hardware (lhm fetches new values from the sensor)
                 foreach (var hardware in _computer.Hardware)
                 {
                     hardware.Update();
                 }
+
+                // snapshot of currently "up" network adapters, keyed by NetworkInterface.Name
+                // (matches LHM's Hardware.Name 1:1)
+                // rebuilt every tick since Wi-Fi/Ethernet can connect or disconnect while the app is running
+                // filter layers (QoS Packet Scheduler, WFP, Native/Virtual WiFi Filter Driver) and WAN Miniport stubs as "Up"
+                // even though they carry no real traffic; requiring at least one assigned IP address filters those out, since
+                // only the actual physical/virtual adapter above them gets an address
+                var activeNetworkAdapters = new HashSet<string>(
+                    NetworkInterface.GetAllNetworkInterfaces()
+                        .Where(nic => nic.OperationalStatus == OperationalStatus.Up &&
+                            nic.GetIPProperties().UnicastAddresses.Count > 0)
+                        .Select(nic => nic.Name));
 
                 // this is the exact list for the big event HardwareDataUpdated, we create a new list
                 // and every iteration fill it with the current values of all the sensors we want to monitor
@@ -236,11 +243,22 @@ namespace FluentSensors.Core
                         // UI update and no widget graph update for this tick
                         if (_excludedSensorIds.Contains(id)) continue;
 
+                        // skip sensors belonging to network adapters that are not currently active; Windows creates a huge
+                        // amount of virtual/filter pseudo-adapters alongside every real one (QoS, WFP, Wi-Fi Direct, etc.),
+                        // and those never carry meaningful data
+                        if (sensor.Hardware.HardwareType == HardwareType.Network &&
+                            !activeNetworkAdapters.Contains(sensor.Hardware.Name))
+                        {
+                            continue;
+                        }
+
                         // some sensors might not have a value at the moment (maybe a hdd is still sleeping or smth)
                         if (sensor.Value.HasValue)
                         {
                             double value = sensor.Value.Value;
 
+                            // some sensors (e.g. "Network Utilization" on adapters with no known link speed) report NaN or
+                            // Infinity instead of leaving Value unset
                             if (double.IsNaN(value) || double.IsInfinity(value))
                             {
                                 continue;
@@ -248,9 +266,7 @@ namespace FluentSensors.Core
 
                             if (sensor.SensorType == SensorType.Throughput)
                             {
-                                // scale throughput values from b/s to mb/s
-                                double rawValue = value;
-                                value /= 1_048_576.0; 
+                                value /= 1_048_576.0; // bytes/s -> MB/s
                             }
 
                             payload.Add(new SensorData(
@@ -271,10 +287,6 @@ namespace FluentSensors.Core
                 // we fire the event with the new list of sensor data
                 HardwareDataUpdated?.Invoke(payload);
 
-                // await Task.Delay() does not freeze the thread in the same way as Thread.Sleep(), 
-                // it saves the state of the method and returns the background thread to the windows thread pool
-                // for those few milliseconds, and after the delay, it grabs a free thread again from the windows
-                // thread pool and continues the execution of the method from where it left off
                 try
                 {
                     await Task.Delay(UpdateIntervalMs, token);
