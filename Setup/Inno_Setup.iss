@@ -10,13 +10,18 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{EBF1FF82-8B01-4284-8033-2D2A6AF0E6A7}
+AppId={{A6A8EFB0-31D9-4448-9E38-BC16FD97E22E}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
+VersionInfoCompany={#MyAppPublisher}
+VersionInfoProductName={#MyAppName}
+VersionInfoDescription={#MyAppName} Setup
+VersionInfoVersion={#MyAppVersion}.0
 DefaultDirName={autopf}\{#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
+UninstallDisplayName={#MyAppName}
 ; "ArchitecturesAllowed=x64compatible" specifies that Setup cannot run
 ; on anything but x64 and Windows 11 on Arm.
 ArchitecturesAllowed=x64compatible
@@ -52,4 +57,47 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+[Code]
+const
+  OldAppId = '{EBF1FF82-8B01-4284-8033-2D2A6AF0E6A7}';
+
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\' + OldAppId + '_is1';
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKLM64, sUnInstPath, 'UninstallString', sUnInstallString);
+  Result := sUnInstallString;
+end;
+
+function IsOldVersionInstalled(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+procedure UninstallOldVersion();
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then
+  begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    Exec(sUnInstallString, '/VERYSILENT /NORESTART /SUPPRESSMSGBOXES', '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
+  end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep = ssInstall) then
+  begin
+    if IsOldVersionInstalled() then
+      UninstallOldVersion();
+  end;
+end;
 
