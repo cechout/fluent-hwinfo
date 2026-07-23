@@ -17,6 +17,9 @@ namespace FluentSensors.Features.Performance.Lhm
         // === fields ===
 
         private readonly DispatcherQueue _dispatcherQueue;
+        private const int TotalLoadDataPoints = 110;
+        private const int CoreDataPoints = 60;
+
 
 
         // === constructor ===
@@ -25,8 +28,6 @@ namespace FluentSensors.Features.Performance.Lhm
         {
             Cores = new ObservableCollection<SensorGraphViewModel>();
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
-
-            System.Diagnostics.Debug.WriteLine("[LhmCpuPerf] Constructed");
 
             HardwareMonitorService.Instance.HardwareDataUpdated += OnHardwareDataUpdated;
         }
@@ -66,12 +67,9 @@ namespace FluentSensors.Features.Performance.Lhm
 
         private void OnHardwareDataUpdated(List<SensorData> payload)
         {
-            System.Diagnostics.Debug.WriteLine($"[LhmCpuPerf] Handler called, payload count={payload.Count}");
-
             _dispatcherQueue.TryEnqueue(() =>
             {
                 int cpuLoadCount = payload.Count(d => d.HardwareType == "Cpu" && d.SensorType == "Load");
-                System.Diagnostics.Debug.WriteLine($"[LhmCpuPerf] Cpu/Load sensors in payload: {cpuLoadCount}");
 
                 foreach (var data in payload)
                 {
@@ -81,7 +79,7 @@ namespace FluentSensors.Features.Performance.Lhm
                     {
                         if (TotalLoad == null)
                         {
-                            TotalLoad = new SensorGraphViewModel(data.Id, data.Name, data.SensorType);
+                            TotalLoad = new SensorGraphViewModel(data.Id, data.Name, data.SensorType, TotalLoadDataPoints);
                         }
                         TotalLoad.AddDataPoint(data.Value, SensorUnitFormatter.Format(data.Value, data.SensorType));
                     }
@@ -91,15 +89,13 @@ namespace FluentSensors.Features.Performance.Lhm
 
                         if (core == null)
                         {
-                            core = new SensorGraphViewModel(data.Id, data.Name, data.SensorType);
+                            core = new SensorGraphViewModel(data.Id, data.Name, data.SensorType, CoreDataPoints);
                             Cores.Add(core);
                         }
 
                         core.AddDataPoint(data.Value, SensorUnitFormatter.Format(data.Value, data.SensorType));
                     }
                 }
-
-                System.Diagnostics.Debug.WriteLine($"[LhmCpuPerf] TotalLoad null? {TotalLoad == null} | Cores count={Cores.Count}");
             });
         }
 

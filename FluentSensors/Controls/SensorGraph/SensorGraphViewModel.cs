@@ -17,20 +17,25 @@ namespace FluentSensors.Controls.SensorGraph
 
         private double _currentRaw;
         private readonly double _yMaxStep;
+        private readonly int? _dataPointsOverride;
 
 
         // === constructor ===
 
-        public SensorGraphViewModel(string sensorId, string sensorName, string sensorType)
+        public SensorGraphViewModel(string sensorId, string sensorName, string sensorType, int? dataPointsOverride = null)
         {
             SensorId = sensorId;
             SensorName = sensorName;
             CurrentValueText = "-"; // placeholder text until we have the first value
             CurrentValueColor = DefaultTextColor.Resolve();
 
+            // when set, this instance owns a fixed graph data point count independent of the global GraphDataPoints setting
+            _dataPointsOverride = dataPointsOverride;
+            int initialPointCount = dataPointsOverride ?? SettingsService.Instance.GraphDataPoints;
+
             // this raw data list will be plotted by LiveCharts
             // we use LINQ Enumerable.Repeat to fill the entire list with "0.0" values at startup
-            SensorData = new ObservableCollection<double?>(Enumerable.Repeat<double?>(0.0, SettingsService.Instance.GraphDataPoints));
+            SensorData = new ObservableCollection<double?>(Enumerable.Repeat<double?>(0.0, initialPointCount));
 
             GraphColor = ResolveGraphColor(SettingsService.Instance.UseGraphAccentColor, SettingsService.Instance.GraphCustomColor);
             SettingsService.Instance.GraphColorChanged += OnGraphColorChanged;
@@ -186,6 +191,9 @@ namespace FluentSensors.Controls.SensorGraph
 
         private void OnGraphDataPointsChanged(int newCount)
         {
+            // instances with a fixed override never resize with the global setting
+            if (_dataPointsOverride.HasValue) return;
+
             int currentCount = SensorData.Count;
 
             if (newCount > currentCount)
