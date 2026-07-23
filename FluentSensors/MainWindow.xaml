@@ -43,21 +43,30 @@
             IsBackButtonVisible="Collapsed"
             IsPaneOpen="False"
             IsSettingsVisible="False"
-            OpenPaneLength="150"
+            OpenPaneLength="160"
             PaneDisplayMode="Left"
             SelectionChanged="MainNavigationView_SelectionChanged">
 
-            <!--  sensor page  -->
             <NavigationView.MenuItems>
+
+                <!--  sensor page  -->
                 <NavigationViewItem Content="Sensors" Tag="Sensors">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xECAA;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+
+                <!--  performance page  -->
+                <NavigationViewItem Content="Performance" Tag="Performance">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE9D9;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
 
-            <!--  settings page  -->
             <NavigationView.FooterMenuItems>
+
+                <!--  settings page  -->
                 <NavigationViewItem Content="Settings" Tag="Settings">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE713;" />

@@ -26,6 +26,8 @@ namespace FluentSensors.Features.Performance.Lhm
             Cores = new ObservableCollection<SensorGraphViewModel>();
             _dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 
+            System.Diagnostics.Debug.WriteLine("[LhmCpuPerf] Constructed");
+
             HardwareMonitorService.Instance.HardwareDataUpdated += OnHardwareDataUpdated;
         }
 
@@ -43,13 +45,34 @@ namespace FluentSensors.Features.Performance.Lhm
         // one graph per "CPU Core #N[ Thread #M]" sensor
         public ObservableCollection<SensorGraphViewModel> Cores { get; }
 
+        // controls which of the two views is currently shown
+        // (single overall graph or grid of all cores/threads)
+        private bool _isShowingAllThreads;
+        public bool IsShowingAllThreads
+        {
+            get => _isShowingAllThreads;
+            set
+            {
+                if (_isShowingAllThreads != value)
+                {
+                    _isShowingAllThreads = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         // === event handlers ===
 
         private void OnHardwareDataUpdated(List<SensorData> payload)
         {
+            System.Diagnostics.Debug.WriteLine($"[LhmCpuPerf] Handler called, payload count={payload.Count}");
+
             _dispatcherQueue.TryEnqueue(() =>
             {
+                int cpuLoadCount = payload.Count(d => d.HardwareType == "Cpu" && d.SensorType == "Load");
+                System.Diagnostics.Debug.WriteLine($"[LhmCpuPerf] Cpu/Load sensors in payload: {cpuLoadCount}");
+
                 foreach (var data in payload)
                 {
                     if (data.HardwareType != "Cpu" || data.SensorType != "Load") continue;
@@ -62,7 +85,7 @@ namespace FluentSensors.Features.Performance.Lhm
                         }
                         TotalLoad.AddDataPoint(data.Value, SensorUnitFormatter.Format(data.Value, data.SensorType));
                     }
-                    else if (data.Name.StartsWith("CPU Core #")) // excludes the "CPU Core Max" aggregate sensor
+                    else if (data.Name.StartsWith("CPU Core #"))
                     {
                         var core = Cores.FirstOrDefault(c => c.SensorId == data.Id);
 
@@ -75,6 +98,8 @@ namespace FluentSensors.Features.Performance.Lhm
                         core.AddDataPoint(data.Value, SensorUnitFormatter.Format(data.Value, data.SensorType));
                     }
                 }
+
+                System.Diagnostics.Debug.WriteLine($"[LhmCpuPerf] TotalLoad null? {TotalLoad == null} | Cores count={Cores.Count}");
             });
         }
 

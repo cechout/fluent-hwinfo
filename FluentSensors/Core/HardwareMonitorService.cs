@@ -273,7 +273,8 @@ namespace FluentSensors.Core
 
                         // skip sensors that were excluded by the user (e.g. hidden in the UI); no payload entry means no
                         // UI update and no widget graph update for this tick
-                        if (_excludedSensorIds.Contains(id)) continue;
+                        // TEMP: temporarily disabled to allow all sensors to be visible in PerformancePage
+                        //if (_excludedSensorIds.Contains(id)) continue;
 
                         // skip sensors belonging to network adapters that are not currently active; Windows creates a huge
                         // amount of virtual/filter pseudo-adapters alongside every real one (QoS, WFP, Wi-Fi Direct, etc.),

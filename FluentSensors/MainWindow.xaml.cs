@@ -16,6 +16,7 @@ using FluentSensors.Features.Widget;
 using FluentSensors.Features.Sensors;
 using FluentSensors.Persistence.Services;
 using FluentSensors.Controls.SensorRow;
+using FluentSensors.Features.Performance;
 
 
 namespace FluentSensors
@@ -323,6 +324,10 @@ namespace FluentSensors
 
                     case "Settings":
                         contentFrame.Navigate(typeof(SettingsPage));
+                        break;
+
+                    case "Performance":
+                        contentFrame.Navigate(typeof(PerformancePage));
                         break;
                 }
             }

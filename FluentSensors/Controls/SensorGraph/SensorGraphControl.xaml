@@ -19,9 +19,9 @@
         <Grid CornerRadius="3.3">
             <lvc:CartesianChart
                 x:Name="Chart"
-                Height="80"
                 Margin="-3,0,-3,-2"
                 HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 AnimationsSpeed="00:00:00"
                 Background="Transparent"
                 CornerRadius="20"
@@ -34,9 +34,9 @@
 
             <Canvas
                 x:Name="HoverCanvas"
-                Height="80"
                 Margin="-3,0,-3,-2"
                 HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 IsHitTestVisible="False">
 
                 <Ellipse

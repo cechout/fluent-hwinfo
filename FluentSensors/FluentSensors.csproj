@@ -41,6 +41,7 @@
 		<None Remove="Assets\SplashScreen.ico" />
 		<None Remove="Controls\Graph.xaml" />
 		<None Remove="Controls\SensorCardControl.xaml" />
+		<None Remove="Features\Performance\PerformancePage.xaml" />
 		<None Remove="Features\Sensors\HiddenSensorsWindow.xaml" />
 		<None Remove="Features\Sensors\SensorsPage.xaml" />
 		<None Remove="Features\Settings\SettingsPage.xaml" />
@@ -87,6 +88,11 @@
     <Content Update="Assets\Icon\Icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Features\Performance\PerformancePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 	<ItemGroup>
 		<Page Update="Features\Sensors\HiddenSensorsWindow.xaml">
